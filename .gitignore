@@ -1,0 +1,10 @@
+.env
+*.cfg
+music
+__*
+!__init__.py
+log.txt
+chromedriver.exe
+cache
+debug.log
+*.db

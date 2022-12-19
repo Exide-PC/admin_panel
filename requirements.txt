@@ -1,0 +1,6 @@
+flask
+flask-cors
+waitress
+python-dotenv==0.15.0
+dependency_injector
+requests

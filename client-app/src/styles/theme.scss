@@ -1,0 +1,40 @@
+// bootstrap vars
+$body-bg: #222226;
+$body-color: rgb(224, 224, 224);
+
+$primary: #ca397a;
+// $secondary: #fc3a3b;
+$light: #6c757d;
+$input-bg: $body-bg;
+$input-color: $body-color;
+$input-disabled-bg: #343a40;
+$nav-tabs-link-active-color: $primary;
+$modal-content-bg: $body-bg;
+$modal-header-border-width: unset;
+$border-radius: .35em;
+
+// custom vars
+// -- nothing yet --
+
+html, body, #root {
+    height: 100%;
+}
+
+html * {
+    font-family: "Roboto", sans-serif !important;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.btn:focus {
+    box-shadow: none !important;
+}
+.slide-pane__content {
+    padding: 24px 43px;
+}
+
+#root {
+    padding-top: 100px;
+}
