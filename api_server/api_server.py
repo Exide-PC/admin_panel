@@ -51,9 +51,25 @@ def run_api_server(container: Container):
     @app.route('/api/app', methods=['GET'])
     @token_auth()
     def init_app():
-        return jsonify({
-        })
+        return jsonify({})
 
+    @app.route('/api/maintenance', methods=['GET'])
+    @token_auth()
+    def get_maintenance_commands():
+        maintenance_service = container.maintenance_service()
+        maintenance_commands = maintenance_service.get_commands()
+        
+        return jsonify(list(map(
+            lambda c: { 'name': c.name, }, maintenance_commands
+        )))
+
+    @app.route('/api/maintenance', methods=['POST'])
+    @token_auth()
+    def execute_maintenance():
+        command_index = request.json['command_index']
+        container.maintenance_service().execute(command_index)
+        return jsonify({})
+    
     print(f'Starting Admin Panel API at {env.listener}')
 
     parsed = urllib.parse.urlsplit(env.listener)

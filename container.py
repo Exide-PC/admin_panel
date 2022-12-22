@@ -1,6 +1,7 @@
 from dependency_injector import containers, providers
 
 from repository.db import init_db
+from services.maintenance_service import MaintenanceService
 
 
 class Container(containers.DeclarativeContainer):
@@ -16,7 +17,6 @@ class Container(containers.DeclarativeContainer):
     #     con=database_client
     # )
 
-    # user_service = providers.Factory(
-    #     UserService,
-    #     user_repo=user_repo
-    # )
+    maintenance_service = providers.Singleton(
+        MaintenanceService
+    )
