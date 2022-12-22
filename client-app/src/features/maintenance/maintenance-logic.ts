@@ -7,7 +7,7 @@ export const maintenanceActions = {
         const commands = await fetchMaintenanceCommands()
         dispatch(receiveMaintenanceCommands(commands));
     },
-    executeMaintenanceCommand: (commandIndex: number): AppThunk<Promise<void>> => async (dispatch, getState) => {
-        await fetchExecuteMaintenanceCommand(commandIndex);
+    executeMaintenanceCommand: (commandId: string): AppThunk<Promise<void>> => async (dispatch, getState) => {
+        await fetchExecuteMaintenanceCommand(commandId);
     },
 }

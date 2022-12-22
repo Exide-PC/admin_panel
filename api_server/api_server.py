@@ -60,14 +60,14 @@ def run_api_server(container: Container):
         maintenance_commands = maintenance_service.get_commands()
         
         return jsonify(list(map(
-            lambda c: { 'name': c.name, 'group': c.group }, maintenance_commands
+            lambda c: { 'id': c.id, 'name': c.name, 'group': c.group }, maintenance_commands
         )))
 
     @app.route('/api/maintenance', methods=['POST'])
     @token_auth()
     def execute_maintenance():
-        command_index = request.json['command_index']
-        container.maintenance_service().execute(command_index)
+        command_id = request.json['command_id']
+        container.maintenance_service().execute(command_id)
         return jsonify({})
     
     print(f'Starting Admin Panel API at {env.listener}')

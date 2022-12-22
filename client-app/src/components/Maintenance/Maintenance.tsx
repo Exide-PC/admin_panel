@@ -6,6 +6,7 @@ import { Button, FormGroup, Row } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { maintenanceActions } from "../../features/maintenance/maintenance-logic";
 import { getMaintenanceCommands } from "../../features/maintenance/maintenance-selectors";
+import { MaintenanceCommand } from "../../features/maintenance/maintenance-slice";
 
 const Maintenance = () => {
 
@@ -17,12 +18,12 @@ const Maintenance = () => {
 
     const commands = useAppSelector(getMaintenanceCommands);
 
-    const maintenance = async (index: number) => {
+    const maintenance = async (command: MaintenanceCommand) => {
         await toast.promise(
-            dispatch(maintenanceActions.executeMaintenanceCommand(index)), {
-                loading: `${commands[index].name}...`,
-                success: `${commands[index].name}`,
-                error: `Failed to ${commands[index].name}`,
+            dispatch(maintenanceActions.executeMaintenanceCommand(command.id)), {
+                loading: `${command.group}: ${command.name}...`,
+                success: `${command.group}: ${command.name}`,
+                error: `${command.group} ${command.name}`,
             }
         )
     }
@@ -37,7 +38,7 @@ const Maintenance = () => {
                 <FormGroup key={group}>
                     <big>{group}</big>
                     {groups[group].map((c, i) => (
-                        <Button block key={i} onClick={() => maintenance(i)}>
+                        <Button block key={i} onClick={() => maintenance(c)}>
                             {c.name}
                         </Button>
                     ))}
