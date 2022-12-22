@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface MaintenanceCommand {
     name: string;
+    group: string;
 }
 
 export interface MaintenanceState {

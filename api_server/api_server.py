@@ -60,7 +60,7 @@ def run_api_server(container: Container):
         maintenance_commands = maintenance_service.get_commands()
         
         return jsonify(list(map(
-            lambda c: { 'name': c.name, }, maintenance_commands
+            lambda c: { 'name': c.name, 'group': c.group }, maintenance_commands
         )))
 
     @app.route('/api/maintenance', methods=['POST'])
