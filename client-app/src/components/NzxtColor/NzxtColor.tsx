@@ -160,10 +160,8 @@ const NzxtColor = () => {
 
     return (
         <div>
-            <FormGroup>
-            </FormGroup>
             <FormGroup row>
-                <Col>
+                <Col xs={12} md={4}>
                     {colorTypes.map(t => (
                         <RadioButton
                             key={t}
@@ -173,7 +171,7 @@ const NzxtColor = () => {
                         />
                     ))}
                 </Col>
-                <Col>
+                <Col xs={6} md={4}>
                     <RadioButton
                         label="Slowest"
                         checked={modifiers.speed === 'slowest'}
@@ -200,7 +198,7 @@ const NzxtColor = () => {
                         onClick={() => handleModifiers({ ...modifiers, speed: 'fastest' })}
                     />
                 </Col>
-                <Col>
+                <Col xs={6} md={4}>
                     <RadioButton
                         label="Forward"
                         checked={modifiers.direction === 'forward'}
