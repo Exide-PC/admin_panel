@@ -1,7 +1,7 @@
 import * as React from "react";
 import _ from "lodash";
 import { toast } from "react-hot-toast";
-import { Col, FormGroup, Input } from "reactstrap";
+import { Col, FormGroup, Input, Row } from "reactstrap";
 import { RadioButton } from "../common/RadioButton";
 import { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -161,55 +161,57 @@ const NzxtColor = () => {
     return (
         <div>
             <FormGroup row>
-                <Col xs={12} md={4}>
-                    {colorTypes.map(t => (
+                <Row>
+                    <Col xs={12} md={4}>
+                        {colorTypes.map(t => (
+                            <RadioButton
+                                key={t}
+                                label={getColorTypeLabel(t)}
+                                checked={color.type === t}
+                                onClick={() => handleColorType(t)}
+                            />
+                        ))}
+                    </Col>
+                    <Col xs={6} md={4}>
                         <RadioButton
-                            key={t}
-                            label={getColorTypeLabel(t)}
-                            checked={color.type === t}
-                            onClick={() => handleColorType(t)}
+                            label="Slowest"
+                            checked={modifiers.speed === 'slowest'}
+                            onClick={() => handleModifiers({ ...modifiers, speed: 'slowest' })}
                         />
-                    ))}
-                </Col>
-                <Col xs={6} md={4}>
-                    <RadioButton
-                        label="Slowest"
-                        checked={modifiers.speed === 'slowest'}
-                        onClick={() => handleModifiers({ ...modifiers, speed: 'slowest' })}
-                    />
-                    <RadioButton
-                        label="Slower"
-                        checked={modifiers.speed === 'slower'}
-                        onClick={() => handleModifiers({ ...modifiers, speed: 'slower' })}
-                    />
-                    <RadioButton
-                        label="Normal"
-                        checked={modifiers.speed === 'normal'}
-                        onClick={() => handleModifiers({ ...modifiers, speed: 'normal' })}
-                    />
-                    <RadioButton
-                        label="Faster"
-                        checked={modifiers.speed === 'faster'}
-                        onClick={() => handleModifiers({ ...modifiers, speed: 'faster' })}
-                    />
-                    <RadioButton
-                        label="Fastest"
-                        checked={modifiers.speed === 'fastest'}
-                        onClick={() => handleModifiers({ ...modifiers, speed: 'fastest' })}
-                    />
-                </Col>
-                <Col xs={6} md={4}>
-                    <RadioButton
-                        label="Forward"
-                        checked={modifiers.direction === 'forward'}
-                        onClick={() => handleModifiers({ ...modifiers, direction: 'forward' })}
-                    />
-                    <RadioButton
-                        label="Backward"
-                        checked={modifiers.direction === 'backward'}
-                        onClick={() => handleModifiers({ ...modifiers, direction: 'backward' })}
-                    />
-                </Col>
+                        <RadioButton
+                            label="Slower"
+                            checked={modifiers.speed === 'slower'}
+                            onClick={() => handleModifiers({ ...modifiers, speed: 'slower' })}
+                        />
+                        <RadioButton
+                            label="Normal"
+                            checked={modifiers.speed === 'normal'}
+                            onClick={() => handleModifiers({ ...modifiers, speed: 'normal' })}
+                        />
+                        <RadioButton
+                            label="Faster"
+                            checked={modifiers.speed === 'faster'}
+                            onClick={() => handleModifiers({ ...modifiers, speed: 'faster' })}
+                        />
+                        <RadioButton
+                            label="Fastest"
+                            checked={modifiers.speed === 'fastest'}
+                            onClick={() => handleModifiers({ ...modifiers, speed: 'fastest' })}
+                        />
+                    </Col>
+                    <Col xs={6} md={4}>
+                        <RadioButton
+                            label="Forward"
+                            checked={modifiers.direction === 'forward'}
+                            onClick={() => handleModifiers({ ...modifiers, direction: 'forward' })}
+                        />
+                        <RadioButton
+                            label="Backward"
+                            checked={modifiers.direction === 'backward'}
+                            onClick={() => handleModifiers({ ...modifiers, direction: 'backward' })}
+                        />
+                    </Col>
+                </Row>
             </FormGroup>
             <FormGroup>
                 {showCountInput && (
