@@ -3,8 +3,10 @@ import _ from "lodash";
 import { toast } from "react-hot-toast";
 import { Col, FormGroup, Input } from "reactstrap";
 import { RadioButton } from "../common/RadioButton";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fetchPatchSettings } from "../../features/app/app-api";
+import { useAppSelector } from "../../app/hooks";
+import { getColorArgs } from "../../features/app/app-selectors";
 
 // https://github.com/liquidctl/liquidctl/blob/main/docs/nzxt-hue2-guide.md
 const colorMeta = {
@@ -70,14 +72,17 @@ const defaultColor = '#d600ff';
 
 const NzxtColor = () => {
 
-    const [color, setColor] = useState<AnyColor>({ type: 'fixed', colors: [defaultColor] });
-    const [modifiers, setModifiers] = useState<Modifiers>({ speed: 'normal', direction: 'forward' })
+    const savedColorArgs = useAppSelector(getColorArgs);
+    const [initColor, initModifiers] = useMemo(() => parseColor(savedColorArgs), [savedColorArgs]);
+
+    const [color, setColor] = useState<AnyColor>(initColor);
+    const [modifiers, setModifiers] = useState<Modifiers>(initModifiers)
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
 
     useEffect(() => {
         if (!anyChanges) return;
 
-        const debounce = _.debounce(() => submitColor(color, modifiers), 1000);
+        const debounce = _.debounce(() => submitColor(color, modifiers), 200);
         debounce();
 
         return debounce.cancel;
@@ -139,7 +144,7 @@ const NzxtColor = () => {
             const newColors = count < prevColors.length
                 ? prevColors.slice(0, count)
                 : [...prevColors, ...initColors(count - prevColors.length)]
-            
+
             return ({
                 ...prev,
                 colors: newColors,
@@ -289,6 +294,29 @@ const getColorTypeLabel = (type: ColorType): JSX.Element | string => {
     }
 
     return <>{type} <small style={{ color: 'gray' }}>(min: {meta.min}, max: {meta.max})</small></>
+}
+
+const parseColor = (args: string): [AnyColor, Modifiers] => {
+    const parts = args.split(' ').filter(p => !!p);
+
+    const color: any = {};
+    const modifiers: any = {}
+
+    color.colors = parts.slice(1, -4).map(c => `#${c}`);
+
+    if (/^.*-[3-6]$/.test(parts[0])) {
+        const typeParts = parts[0].split('-');
+        color.type = typeParts.slice(0, -1).join('-')
+        color.length = parseInt(typeParts.slice(-1)[0])
+    }
+    else {
+        color.type = parts[0];
+    }
+
+    modifiers.speed = parts.slice(-3)[0]
+    modifiers.direction = parts.slice(-1)[0]
+
+    return [color, modifiers];
 }
 
 export default NzxtColor;
