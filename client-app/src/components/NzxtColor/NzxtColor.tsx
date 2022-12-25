@@ -160,7 +160,7 @@ const NzxtColor = () => {
 
     return (
         <div>
-            <FormGroup row>
+            <FormGroup>
                 <Row>
                     <Col xs={12} md={4}>
                         {colorTypes.map(t => (
