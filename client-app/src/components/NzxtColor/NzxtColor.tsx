@@ -2,9 +2,9 @@ import * as React from "react";
 import _ from "lodash";
 import { toast } from "react-hot-toast";
 import { Col, FormGroup, Input } from "reactstrap";
-import { fetchUpdateNzxtColor } from "../../features/nzxt-color/nzxt-color-api";
 import { RadioButton } from "../common/RadioButton";
 import { useEffect, useState } from "react";
+import { fetchPatchSettings } from "../../features/app/app-api";
 
 // https://github.com/liquidctl/liquidctl/blob/main/docs/nzxt-hue2-guide.md
 const colorMeta = {
@@ -260,10 +260,10 @@ const convertModifiers = (modifiers: Modifiers) => {
 
 const submitColor = async (color: AnyColor, modifiers: Modifiers) => {
 
-    const params = `${convertColor(color)} ${convertModifiers(modifiers)}`;
+    const args = `${convertColor(color)} ${convertModifiers(modifiers)}`;
 
     await toast.promise(
-        fetchUpdateNzxtColor(params), {
+        fetchPatchSettings({ nzxt_color: args}), {
             loading: `Saving...`,
             success: `Saved`,
             error: `Failed to save`,

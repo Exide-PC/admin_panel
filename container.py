@@ -1,7 +1,10 @@
 from dependency_injector import containers, providers
+from repository.appsettings_repository import AppSettingsRepository
 
 from repository.db import init_db
+from services.appsettings_service import AppSettingsService
 from services.maintenance_service import MaintenanceService
+from services.nzxt_service import NzxtService
 
 
 class Container(containers.DeclarativeContainer):
@@ -12,11 +15,20 @@ class Container(containers.DeclarativeContainer):
         migrations_dir='repository/migrations'
     )
 
-    # user_repo = providers.Factory(
-    #     UserRepository,
-    #     con=database_client
-    # )
+    appsettings_repo = providers.Factory(
+        AppSettingsRepository,
+        con=database_client
+    )
+
+    appsettings_service = providers.Factory(
+        AppSettingsService,
+        repo=appsettings_repo
+    )
 
     maintenance_service = providers.Singleton(
         MaintenanceService
+    )
+
+    nzxt_service = providers.Factory(
+        NzxtService
     )
