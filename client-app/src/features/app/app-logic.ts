@@ -1,6 +1,6 @@
 import { AppThunk } from "../../app/store";
-import { fetchApp } from "./app-api";
-import { AppStateEnum, receiveAppState, receiveSettings } from "./app-slice";
+import { fetchApp, fetchPatchSettings } from "./app-api";
+import { AppSettings, AppStateEnum, receiveAppState, receiveSettings } from "./app-slice";
 
 export const appActions = {
     initApp: (token?: string): AppThunk => async (dispatch, getState) => {
@@ -24,5 +24,9 @@ export const appActions = {
                 throw e;
             }
         }
+    },
+    patchSettings: (settings: Partial<AppSettings>): AppThunk<Promise<void>> => async (dispatch, getState) => {
+        const newSettings = await fetchPatchSettings(settings);
+        dispatch(receiveSettings(newSettings));
     }
 }

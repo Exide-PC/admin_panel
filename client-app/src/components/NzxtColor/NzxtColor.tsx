@@ -4,9 +4,10 @@ import { toast } from "react-hot-toast";
 import { Col, FormGroup, Input } from "reactstrap";
 import { RadioButton } from "../common/RadioButton";
 import { useEffect, useMemo, useState } from "react";
-import { fetchPatchSettings } from "../../features/app/app-api";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getColorArgs } from "../../features/app/app-selectors";
+import { AppDispatch } from "../../app/store";
+import { appActions } from "../../features/app/app-logic";
 
 // https://github.com/liquidctl/liquidctl/blob/main/docs/nzxt-hue2-guide.md
 const colorMeta = {
@@ -72,6 +73,8 @@ const defaultColor = '#d600ff';
 
 const NzxtColor = () => {
 
+    const dispatch = useAppDispatch();
+
     const savedColorArgs = useAppSelector(getColorArgs);
     const [initColor, initModifiers] = useMemo(() => parseColor(savedColorArgs), [savedColorArgs]);
 
@@ -82,7 +85,7 @@ const NzxtColor = () => {
     useEffect(() => {
         if (!anyChanges) return;
 
-        const debounce = _.debounce(() => submitColor(color, modifiers), 200);
+        const debounce = _.debounce(() => submitColor(color, modifiers, dispatch), 200);
         debounce();
 
         return debounce.cancel;
@@ -263,12 +266,12 @@ const convertModifiers = (modifiers: Modifiers) => {
     return `--speed ${modifiers.speed} --direction ${modifiers.direction}`
 }
 
-const submitColor = async (color: AnyColor, modifiers: Modifiers) => {
+const submitColor = async (color: AnyColor, modifiers: Modifiers, dispatch: AppDispatch) => {
 
     const args = `${convertColor(color)} ${convertModifiers(modifiers)}`;
 
     await toast.promise(
-        fetchPatchSettings({ nzxt_color: args}), {
+        dispatch(appActions.patchSettings({ nzxt_color: args})), {
             loading: `Saving...`,
             success: `Saved`,
             error: `Failed to save`,

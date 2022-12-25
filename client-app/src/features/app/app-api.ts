@@ -5,6 +5,6 @@ export async function fetchApp(): Promise<AppSettings> {
     return await _fetch<AppSettings>(`api/app`, 'GET');
 }
 
-export async function fetchPatchSettings(settings: Partial<AppSettings>): Promise<void> {
-    await _fetch(`api/app`, 'PATCH', settings);
+export async function fetchPatchSettings(settings: Partial<AppSettings>): Promise<AppSettings> {
+    return await _fetch<AppSettings>(`api/app`, 'PATCH', settings);
 }
