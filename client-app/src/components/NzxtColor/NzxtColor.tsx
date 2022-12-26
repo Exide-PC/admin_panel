@@ -1,13 +1,12 @@
-import * as React from "react";
 import _ from "lodash";
 import { toast } from "react-hot-toast";
 import { Col, FormGroup, Input, Row } from "reactstrap";
 import { RadioButton } from "../common/RadioButton";
 import { useEffect, useMemo, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { getColorArgs } from "../../features/app/app-selectors";
+import { useAppDispatch } from "../../app/hooks";
 import { AppDispatch } from "../../app/store";
-import { appActions } from "../../features/app/app-logic";
+import { nzxtActions, useNzxtConfig } from "../../features/nzxt/nzxt-logic";
+import { NzxtConfig } from "../../features/nzxt/nzxt-slice";
 
 // https://github.com/liquidctl/liquidctl/blob/main/docs/nzxt-hue2-guide.md
 const colorMeta = {
@@ -71,13 +70,17 @@ type Modifiers = {
 
 const defaultColor = '#d600ff';
 
-const NzxtColor = () => {
+interface NzxtColorEditorProps {
+    initConfig: NzxtConfig;
+    initColor: AnyColor;
+    initModifiers: Modifiers;
+}
+
+const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEditorProps) => {
 
     const dispatch = useAppDispatch();
 
-    const savedColorArgs = useAppSelector(getColorArgs);
-    const [initColor, initModifiers] = useMemo(() => parseColor(savedColorArgs), [savedColorArgs]);
-
+    const [config] = useState(initConfig);
     const [color, setColor] = useState<AnyColor>(initColor);
     const [modifiers, setModifiers] = useState<Modifiers>(initModifiers)
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
@@ -85,11 +88,14 @@ const NzxtColor = () => {
     useEffect(() => {
         if (!anyChanges) return;
 
-        const debounce = _.debounce(() => submitColor(color, modifiers, dispatch), 200);
+        const args = `${convertColor(color)} ${convertModifiers(modifiers)}`;
+        const newConfig = { ...config, color: args };
+
+        const debounce = _.debounce(() => submitColor(newConfig, dispatch), 200);
         debounce();
 
         return debounce.cancel;
-    }, [color, modifiers, anyChanges]);
+    }, [color, modifiers, config, anyChanges]);
 
     const handleModifiers = (v: Modifiers) => {
         setModifiers(v);
@@ -266,12 +272,9 @@ const convertModifiers = (modifiers: Modifiers) => {
     return `--speed ${modifiers.speed} --direction ${modifiers.direction}`
 }
 
-const submitColor = async (color: AnyColor, modifiers: Modifiers, dispatch: AppDispatch) => {
-
-    const args = `${convertColor(color)} ${convertModifiers(modifiers)}`;
-
+const submitColor = async (config: NzxtConfig, dispatch: AppDispatch) => {
     await toast.promise(
-        dispatch(appActions.patchSettings({ nzxt_color: args})), {
+        dispatch(nzxtActions.updateNzxtConfig(config)), {
             loading: `Saving...`,
             success: `Saved`,
             error: `Failed to save`,
@@ -322,4 +325,23 @@ const parseColor = (args: string): [AnyColor, Modifiers] => {
     return [color, modifiers];
 }
 
-export default NzxtColor;
+const NzxtColorPage = () => {
+
+    const [config, isLoaded] = useNzxtConfig();
+
+    const [initColor, initModifiers] = useMemo(() => parseColor(config.color), [config]);
+
+    if (!isLoaded) {
+        return <></> // loading
+    }
+
+    return (
+        <NzxtColorEditor
+            initConfig={config}
+            initColor={initColor}
+            initModifiers={initModifiers}
+        />
+    )
+}
+
+export default NzxtColorPage;

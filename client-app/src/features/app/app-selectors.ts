@@ -8,11 +8,6 @@ export const getAppSettings = createSelector(
     slice => slice.settings
 )
 
-export const getColorArgs = createSelector(
-    [getAppSettings],
-    slice => slice.nzxt_color
-)
-
 export const getAppState = createSelector(
     [getSlice],
     slice => slice.state

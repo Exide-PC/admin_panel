@@ -26,7 +26,7 @@ def run_api_server(container: Container):
 
                 if (not auth_header):
                     return ('Token was expected', HTTPStatus.UNAUTHORIZED)
-                
+
                 parts = auth_header.split(' ') # format: "Basic TOKEN"
 
                 if (len(parts) != 2):
@@ -45,53 +45,52 @@ def run_api_server(container: Container):
     @app.route('/api/app', methods=['GET'])
     @token_auth()
     def init_app():
+        return jsonify({})
+
+    @app.route('/api/nzxt', methods=['GET', 'PUT'])
+    @token_auth()
+    def nzxt():
         appsettings = container.appsettings_service().get()
 
-        return jsonify({
-            'nzxt_color': appsettings.nzxt_color,
-            'nzxt_night_hours_start': appsettings.nzxt_night_hours_start,
-            'nzxt_night_hours_end': appsettings.nzxt_night_hours_end
-        })
+        if (request.method == 'GET'):
+            return jsonify({
+                'color': appsettings.nzxt_color,
+                'night_hours_start': appsettings.nzxt_night_hours_start,
+                'night_hours_end': appsettings.nzxt_night_hours_end
+            })
+        else:
+            json = request.json
 
-    @app.route('/api/app', methods=['PATCH'])
+            service = container.appsettings_service()
+            settings = service.get()
+
+            settings.nzxt_color = json['color']
+            settings.nzxt_night_hours_start = json['night_hours_start']
+            settings.nzxt_night_hours_end = json['night_hours_end']
+
+            service.update(settings)
+
+            container.nzxt_service().set_color(settings.nzxt_color)
+
+            return ('', HTTPStatus.NO_CONTENT)
+
+    @app.route('/api/maintenance', methods=['GET', 'POST'])
     @token_auth()
-    def patch_app():
-        json = request.json        
+    def maintenance():
+        maintenance = container.maintenance_service()
 
-        service = container.appsettings_service()
-        settings = service.get()
-        
-        settings.nzxt_color = json['nzxt_color'] if 'nzxt_color' in json else settings.nzxt_color
-        settings.nzxt_night_hours_start = json['nzxt_night_hours_start'] if 'nzxt_night_hours_start' in json else settings.nzxt_night_hours_start
-        settings.nzxt_night_hours_end = json['nzxt_night_hours_end'] if 'nzxt_night_hours_end' in json else settings.nzxt_night_hours_end
+        if (request.method == 'GET'):
+            maintenance_commands = maintenance.get_commands()
 
-        service.update(settings)
+            return jsonify(list(map(
+                lambda c: { 'id': c.id, 'name': c.name, 'group': c.group }, maintenance_commands
+            )))
+        else:
+            command_id = request.json['command_id']
+            maintenance.execute(command_id)
 
-        container.nzxt_service().set_color(settings.nzxt_color)
+            return ('', HTTPStatus.NO_CONTENT)
 
-        return jsonify({
-            'nzxt_color': settings.nzxt_color,
-            'nzxt_night_hours_start': settings.nzxt_night_hours_start,
-            'nzxt_night_hours_end': settings.nzxt_night_hours_end
-        })
-
-    @app.route('/api/maintenance', methods=['GET'])
-    @token_auth()
-    def get_maintenance_commands():
-        maintenance_service = container.maintenance_service()
-        maintenance_commands = maintenance_service.get_commands()
-        
-        return jsonify(list(map(
-            lambda c: { 'id': c.id, 'name': c.name, 'group': c.group }, maintenance_commands
-        )))
-
-    @app.route('/api/maintenance', methods=['POST'])
-    @token_auth()
-    def execute_maintenance():
-        command_id = request.json['command_id']
-        container.maintenance_service().execute(command_id)
-        return jsonify({})
-    
     print(f'Starting Admin Panel API at {env.listener}')
 
     parsed = urllib.parse.urlsplit(env.listener)
