@@ -10,8 +10,8 @@ export const nzxtActions = {
         const config = await fetchNzxtConfig();
         dispatch(receiveNzxtConfig(config));
     },
-    updateNzxtConfig: (config: NzxtConfig): AppThunk<Promise<void>> => async (dispatch, getState) => {
-        await fetchUpdateNzxtConfig(config);
+    updateNzxtConfig: (config: NzxtConfig, saveToDb: boolean): AppThunk<Promise<void>> => async (dispatch, getState) => {
+        await fetchUpdateNzxtConfig(config, saveToDb);
         dispatch(receiveNzxtConfig(config));
     }
 }

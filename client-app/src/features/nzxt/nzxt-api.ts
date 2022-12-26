@@ -5,6 +5,6 @@ export async function fetchNzxtConfig(): Promise<NzxtConfig> {
     return await _fetch<NzxtConfig>(`api/nzxt`, 'GET');
 }
 
-export async function fetchUpdateNzxtConfig(settings: Partial<NzxtConfig>): Promise<void> {
-    await _fetch(`api/nzxt`, 'PUT', settings);
+export async function fetchUpdateNzxtConfig(config: NzxtConfig, saveToDb: boolean): Promise<void> {
+    await _fetch(`api/nzxt`, 'PUT', { config, saveToDb });
 }

@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { toast } from "react-hot-toast";
-import { Col, FormGroup, Input, Row } from "reactstrap";
+import { Col, FormGroup, Input, Label, Row } from "reactstrap";
 import { RadioButton } from "../common/RadioButton";
 import { useEffect, useMemo, useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
@@ -83,6 +83,7 @@ const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEdit
     const [config] = useState(initConfig);
     const [color, setColor] = useState<AnyColor>(initColor);
     const [modifiers, setModifiers] = useState<Modifiers>(initModifiers)
+    const [saveToDb, setSaveToDb] = useState<boolean>(true);
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
 
     useEffect(() => {
@@ -91,11 +92,11 @@ const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEdit
         const args = `${convertColor(color)} ${convertModifiers(modifiers)}`;
         const newConfig = { ...config, color: args };
 
-        const debounce = _.debounce(() => submitColor(newConfig, dispatch), 200);
+        const debounce = _.debounce(() => submitColor(newConfig, saveToDb, dispatch), 200);
         debounce();
 
         return debounce.cancel;
-    }, [color, modifiers, config, anyChanges]);
+    }, [color, modifiers, config, saveToDb, anyChanges]);
 
     const handleModifiers = (v: Modifiers) => {
         setModifiers(v);
@@ -161,12 +162,30 @@ const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEdit
         });
     }
 
+    const handleSaveToDb = (v: boolean) => {
+        setSaveToDb(v);
+        setAnyChanges(true);
+    }
+
     const colorCount = colorMeta[color.type];
     const showCountInput = colorCount.min !== colorCount.max;
 
     return (
         <div>
             <FormGroup>
+                <FormGroup>
+                    <FormGroup check>
+                        <Input
+                            type="checkbox"
+                            checked={saveToDb}
+                            onChange={e => handleSaveToDb(e.target.checked)}
+                        />
+                        {' '}
+                        <Label check>
+                            Save to database
+                        </Label>
+                    </FormGroup>
+                </FormGroup>
                 <Row>
                     <Col xs={12} md={4}>
                         {colorTypes.map(t => (
@@ -272,9 +291,9 @@ const convertModifiers = (modifiers: Modifiers) => {
     return `--speed ${modifiers.speed} --direction ${modifiers.direction}`
 }
 
-const submitColor = async (config: NzxtConfig, dispatch: AppDispatch) => {
+const submitColor = async (config: NzxtConfig, saveToDb: boolean, dispatch: AppDispatch) => {
     await toast.promise(
-        dispatch(nzxtActions.updateNzxtConfig(config)), {
+        dispatch(nzxtActions.updateNzxtConfig(config, saveToDb)), {
             loading: `Saving...`,
             success: `Saved`,
             error: `Failed to save`,

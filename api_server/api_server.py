@@ -9,6 +9,7 @@ from waitress import serve
 from flask_cors import CORS
 from container import Container
 from env import env
+from services.nzxt_service import NzxtConfig
 
 
 def run_api_server(container: Container):
@@ -50,9 +51,9 @@ def run_api_server(container: Container):
     @app.route('/api/nzxt', methods=['GET', 'PUT'])
     @token_auth()
     def nzxt():
-        appsettings = container.appsettings_service().get()
-
         if (request.method == 'GET'):
+            appsettings = container.appsettings_service().get()
+
             return jsonify({
                 'color': appsettings.nzxt_color,
                 'night_hours_start': appsettings.nzxt_night_hours_start,
@@ -61,16 +62,18 @@ def run_api_server(container: Container):
         else:
             json = request.json
 
-            service = container.appsettings_service()
-            settings = service.get()
+            config = NzxtConfig(
+                json['config']['color'],
+                json['config']['night_hours_start'],
+                json['config']['night_hours_end']
+            )
 
-            settings.nzxt_color = json['color']
-            settings.nzxt_night_hours_start = json['night_hours_start']
-            settings.nzxt_night_hours_end = json['night_hours_end']
+            nzxt_service = container.nzxt_service()
 
-            service.update(settings)
-
-            container.nzxt_service().set_color(settings.nzxt_color)
+            if (json['saveToDb']):
+                nzxt_service.save_config(config)
+            else:
+                nzxt_service.set_color(config.color)
 
             return ('', HTTPStatus.NO_CONTENT)
 

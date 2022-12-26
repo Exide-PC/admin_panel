@@ -30,5 +30,6 @@ class Container(containers.DeclarativeContainer):
     )
 
     nzxt_service = providers.Factory(
-        NzxtService
+        NzxtService,
+        appsettings_service = appsettings_service
     )
