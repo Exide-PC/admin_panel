@@ -167,6 +167,16 @@ const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEdit
         setAnyChanges(true);
     }
 
+    const handleNightStart = (v: number) => {
+         setConfig(prev => ({ ...prev, night_hours_start: v }))
+         setAnyChanges(true);
+    }
+
+    const handleNightEnd = (v: number) => {
+         setConfig(prev => ({ ...prev, night_hours_end: v }))
+         setAnyChanges(true);
+    }
+
     const colorCount = colorMeta[color.type];
     const showCountInput = colorCount.min !== colorCount.max;
 
@@ -186,9 +196,15 @@ const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEdit
                         </Label>
                     </FormGroup>
                 </FormGroup>
-                <FormGroup>
-                    <Input type="number" value={config.night_hours_start} onChange={e => setConfig(prev => ({ ...prev, night_hours_start: e.target.valueAsNumber}))}/>
-                    <Input type="number" value={config.night_hours_end} onChange={e => setConfig(prev => ({ ...prev, night_hours_end: e.target.valueAsNumber}))}/>
+                <FormGroup style={{ width: 300 }}>
+                    <Row>
+                        <Col>
+                            <Input type="number" value={config.night_hours_start} onChange={e => handleNightStart(e.target.valueAsNumber)}/>
+                        </Col>
+                        <Col>
+                            <Input type="number" value={config.night_hours_end} onChange={e => handleNightEnd(e.target.valueAsNumber)}/>
+                        </Col>
+                    </Row>
                 </FormGroup>
                 <Row>
                     <Col xs={12} md={4}>
