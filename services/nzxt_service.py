@@ -33,8 +33,9 @@ class NzxtService:
         self._appsettings_service.update(settings)
 
         now = datetime.now()
+        is_night_hours = now.hour >= config.night_hours_start and now.hour < config.night_hours_end
 
-        if (now.hour >= config.night_hours_start and now.hour < config.night_hours_end):
+        if (not is_night_hours):
             self.set_color(config.color)
     
     def set_color(self, args: str):
