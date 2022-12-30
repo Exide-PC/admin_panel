@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from services.appsettings_service import AppSettingsService
 
@@ -30,6 +31,11 @@ class NzxtService:
         settings.nzxt_night_hours_end = config.night_hours_end
 
         self._appsettings_service.update(settings)
+
+        now = datetime.now()
+
+        if (now.hour >= config.night_hours_start and now.hour < config.night_hours_end):
+            self.set_color(config.color)
     
     def set_color(self, args: str):
         # TODO validation
