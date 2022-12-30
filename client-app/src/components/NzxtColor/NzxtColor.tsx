@@ -80,7 +80,7 @@ const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEdit
 
     const dispatch = useAppDispatch();
 
-    const [config] = useState(initConfig);
+    const [config, setConfig] = useState(initConfig);
     const [color, setColor] = useState<AnyColor>(initColor);
     const [modifiers, setModifiers] = useState<Modifiers>(initModifiers)
     const [saveToDb, setSaveToDb] = useState<boolean>(true);
@@ -185,6 +185,10 @@ const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEdit
                             Save to database
                         </Label>
                     </FormGroup>
+                </FormGroup>
+                <FormGroup>
+                    <Input type="number" value={config.night_hours_start} onChange={e => setConfig(prev => ({ ...prev, night_hours_start: e.target.valueAsNumber}))}/>
+                    <Input type="number" value={config.night_hours_end} onChange={e => setConfig(prev => ({ ...prev, night_hours_end: e.target.valueAsNumber}))}/>
                 </FormGroup>
                 <Row>
                     <Col xs={12} md={4}>
