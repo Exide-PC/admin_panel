@@ -5,6 +5,7 @@ from repository.db import init_db
 from services.appsettings_service import AppSettingsService
 from services.maintenance_service import MaintenanceService
 from services.nzxt_service import NzxtService
+from services.nzxt_worker import NzxtWorkerSynchronizer
 
 
 class Container(containers.DeclarativeContainer):
@@ -32,4 +33,9 @@ class Container(containers.DeclarativeContainer):
     nzxt_service = providers.Factory(
         NzxtService,
         appsettings_service = appsettings_service
+    )
+
+    nzxt_worker_synchronizer = providers.Singleton(
+        NzxtWorkerSynchronizer,
+        config=nzxt_service().get_config()
     )

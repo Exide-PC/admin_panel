@@ -13,6 +13,15 @@ class NzxtService:
     def __init__(self, appsettings_service: AppSettingsService) -> None:
         self._appsettings_service = appsettings_service
 
+    def get_config(self):
+        appsettings = self._appsettings_service.get()
+
+        return NzxtConfig(
+            appsettings.nzxt_color,
+            appsettings.nzxt_night_hours_start,
+            appsettings.nzxt_night_hours_end
+        )
+
     def save_config(self, config: NzxtConfig):
         settings = self._appsettings_service.get()
 

@@ -1,6 +1,7 @@
 import functools
 from http import HTTPStatus
 import os
+from threading import Thread
 from typing import Any
 import urllib
 
@@ -10,6 +11,7 @@ from flask_cors import CORS
 from container import Container
 from env import env
 from services.nzxt_service import NzxtConfig
+from services.nzxt_worker import run_nzxt_worker
 
 
 def run_api_server(container: Container):
@@ -18,6 +20,10 @@ def run_api_server(container: Container):
     app.config["DEBUG"] = True
 
     CORS(app)
+
+    thread = Thread(target=run_nzxt_worker, args=(container.nzxt_worker_synchronizer(),))
+    thread.daemon = True
+    thread.start()
 
     def token_auth():
         def demo_mode_auth_decorator(f: Any):
@@ -52,12 +58,12 @@ def run_api_server(container: Container):
     @token_auth()
     def nzxt():
         if (request.method == 'GET'):
-            appsettings = container.appsettings_service().get()
+            config = container.nzxt_service().get_config()
 
             return jsonify({
-                'color': appsettings.nzxt_color,
-                'night_hours_start': appsettings.nzxt_night_hours_start,
-                'night_hours_end': appsettings.nzxt_night_hours_end
+                'color': config.color,
+                'night_hours_start': config.night_hours_start,
+                'night_hours_end': config.night_hours_end
             })
         else:
             json = request.json
@@ -69,9 +75,12 @@ def run_api_server(container: Container):
             )
 
             nzxt_service = container.nzxt_service()
+            synchronizer = container.nzxt_worker_synchronizer()
 
             if (json['saveToDb']):
                 nzxt_service.save_config(config)
+                synchronizer.config = config
+
             else:
                 nzxt_service.set_color(config.color)
 
