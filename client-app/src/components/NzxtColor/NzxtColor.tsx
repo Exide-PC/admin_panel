@@ -90,7 +90,7 @@ const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEdit
         if (!anyChanges) return;
 
         const args = `${convertColor(color)} ${convertModifiers(modifiers)}`;
-        const newConfig = { ...config, color: args };
+        const newConfig: NzxtConfig = { ...config, color_args: args };
 
         const debounce = _.debounce(() => submitColor(newConfig, saveToDb, dispatch), 200);
         debounce();
@@ -366,17 +366,17 @@ const parseColor = (args: string): [AnyColor, Modifiers] => {
 
 const NzxtColorPage = () => {
 
-    const [config, isLoaded] = useNzxtConfig();
+    const [currentConfig, configs, isLoaded] = useNzxtConfig();
 
-    const [initColor, initModifiers] = useMemo(() => parseColor(config.color), [config]);
-
-    if (!isLoaded) {
+    if (!isLoaded || !currentConfig) {
         return <></> // loading
     }
 
+    const [initColor, initModifiers] = parseColor(currentConfig.color_args);
+
     return (
         <NzxtColorEditor
-            initConfig={config}
+            initConfig={currentConfig}
             initColor={initColor}
             initModifiers={initModifiers}
         />

@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { AppThunk } from "../../app/store";
-import { fetchNzxtConfig, fetchUpdateNzxtConfig } from "./nzxt-api";
-import { getNzxtConfig } from "./nzxt-selectors";
-import { NzxtConfig, receiveNzxtConfig } from "./nzxt-slice";
+import { fetchNzxtConfigs, fetchUpdateNzxtConfig } from "./nzxt-api";
+import { getIsNzxtConfigsLoaded, getCurrentNzxtConfig, getNzxtConfigs } from "./nzxt-selectors";
+import { NzxtConfig, receiveNzxtConfig, receiveNzxtConfigs } from "./nzxt-slice";
 
 export const nzxtActions = {
     loadNzxtConfig: (): AppThunk => async (dispatch, getState) => {
-        const config = await fetchNzxtConfig();
-        dispatch(receiveNzxtConfig(config));
+        const configs = await fetchNzxtConfigs();
+        dispatch(receiveNzxtConfigs(configs));
     },
     updateNzxtConfig: (config: NzxtConfig, saveToDb: boolean): AppThunk<Promise<void>> => async (dispatch, getState) => {
         await fetchUpdateNzxtConfig(config, saveToDb);
@@ -23,10 +23,13 @@ export const useNzxtConfig = () => {
         dispatch(nzxtActions.loadNzxtConfig());
     }, [dispatch]);
 
-    const config = useAppSelector(getNzxtConfig);
+    const currentConfig = useAppSelector(getCurrentNzxtConfig);
+    const configs = useAppSelector(getNzxtConfigs);
+    const isLoaded = useAppSelector(getIsNzxtConfigsLoaded);
 
     return [
-        config,
-        !!config.color
+        currentConfig,
+        configs,
+        isLoaded,
     ] as const;
 }

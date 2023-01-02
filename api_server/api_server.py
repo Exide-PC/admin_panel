@@ -10,7 +10,7 @@ from waitress import serve
 from flask_cors import CORS
 from container import Container
 from env import env
-from services.nzxt_service import NzxtConfig
+from repository.nzxt_config_repository import NzxtConfig
 from services.nzxt_worker import run_nzxt_worker
 
 
@@ -21,7 +21,7 @@ def run_api_server(container: Container):
 
     CORS(app)
 
-    thread = Thread(target=run_nzxt_worker, args=(container.nzxt_worker_synchronizer(),))
+    thread = Thread(target=run_nzxt_worker, args=(container.nzxt_worker_synchronizer(), container.nzxt_led_service()))
     thread.daemon = True
     thread.start()
 
@@ -52,37 +52,42 @@ def run_api_server(container: Container):
     @app.route('/api/app', methods=['GET'])
     @token_auth()
     def init_app():
-        return jsonify({})
+        appsettings = container.appsettings_service().get()
+
+        return jsonify({
+            'nzxt_config_id': appsettings.nzxt_config_id
+        })
 
     @app.route('/api/nzxt', methods=['GET', 'PUT'])
     @token_auth()
     def nzxt():
         if (request.method == 'GET'):
-            config = container.nzxt_service().get_config()
+            configs = container.nzxt_config_service().list()
 
-            return jsonify({
-                'color': config.color,
-                'night_hours_start': config.night_hours_start,
-                'night_hours_end': config.night_hours_end
-            })
+            return jsonify(list(map(lambda c: {
+                'id': c.id,
+                'color_args': c.color_args,
+                'night_hours_start': c.night_hours_start,
+                'night_hours_end': c.night_hours_end
+            }, configs)))
         else:
             json = request.json
 
             config = NzxtConfig(
-                json['config']['color'],
+                json['config']['id'],
+                json['config']['color_args'],
                 json['config']['night_hours_start'],
                 json['config']['night_hours_end']
             )
 
-            nzxt_service = container.nzxt_service()
+            container.nzxt_config_service().update(config)
+
             synchronizer = container.nzxt_worker_synchronizer()
+            synchronizer.config = config
 
-            if (json['saveToDb']):
-                nzxt_service.save_config(config)
-                synchronizer.config = config
-
-            else:
-                nzxt_service.set_color(config.color)
+            if (not config.is_night_hours()):
+                container.nzxt_led_service().set_led(config.color_args)
+                synchronizer.active_color = config.color_args
 
             return ('', HTTPStatus.NO_CONTENT)
 
@@ -103,7 +108,7 @@ def run_api_server(container: Container):
 
             return ('', HTTPStatus.NO_CONTENT)
 
-    print(f'Starting Admin Panel API at {env.listener}')
+    print(f'Starting Admin Console API at {env.listener}')
 
     parsed = urllib.parse.urlsplit(env.listener)
     serve(app, host=parsed.hostname, port=parsed.port)

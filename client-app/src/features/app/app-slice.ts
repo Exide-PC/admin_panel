@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface AppSettings {
+    nzxt_config_id: string;
 }
 
 export enum AppStateEnum {
@@ -18,9 +19,7 @@ export interface AppState {
 const initialState: AppState = {
     state: AppStateEnum.Initial,
     settings: {
-        nzxt_color: '',
-        nzxt_night_hours_start: 0,
-        nzxt_night_hours_end: 0,
+        nzxt_config_id: '',
     }
 };
 

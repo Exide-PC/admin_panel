@@ -1,9 +1,20 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
+import { getNzxtConfigId } from "../app/app-selectors";
 
 const getSlice = (state: RootState) => state.nzxt;
 
-export const getNzxtConfig = createSelector(
+export const getNzxtConfigs = createSelector(
     [getSlice],
-    slice => slice.config
+    configs => configs.configs
+)
+
+export const getCurrentNzxtConfig = createSelector(
+    [getNzxtConfigs, getNzxtConfigId],
+    (configs, configId) => configs.find(c => c.id === configId)
+)
+
+export const getIsNzxtConfigsLoaded = createSelector(
+    [getNzxtConfigs],
+    configs => !!configs.length
 )

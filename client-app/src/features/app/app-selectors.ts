@@ -8,6 +8,11 @@ export const getAppSettings = createSelector(
     slice => slice.settings
 )
 
+export const getNzxtConfigId = createSelector(
+    [getAppSettings],
+    settings => settings.nzxt_config_id
+)
+
 export const getAppState = createSelector(
     [getSlice],
     slice => slice.state

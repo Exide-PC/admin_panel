@@ -1,32 +1,39 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface NzxtConfig {
-    color: string;
+    id: string;
+    color_args: string;
     night_hours_start: number;
     night_hours_end: number;
 }
 
 export interface AppState {
-    config: NzxtConfig;
+    configs: NzxtConfig[];
 }
 
 const initialState: AppState = {
-    config: {
-        color: '',
-        night_hours_start: 0,
-        night_hours_end: 0,
-    }
+    configs: [],
 };
 
 export const appSlice = createSlice({
     name: 'app',
     initialState,
     reducers: {
+        receiveNzxtConfigs: (state, action: PayloadAction<NzxtConfig[]>) => {
+            state.configs = action.payload;
+        },
         receiveNzxtConfig: (state, action: PayloadAction<NzxtConfig>) => {
-            state.config = action.payload;
+            const index = state.configs.findIndex(c => c.id === action.payload.id);
+
+            if (index === -1) {
+                state.configs.push(action.payload);
+            }
+            else {
+                state.configs = state.configs.map((c, i) => i === index ? action.payload : c);
+            }
         },
     },
 });
 
 export default appSlice.reducer;
-export const { receiveNzxtConfig } = appSlice.actions;
+export const { receiveNzxtConfigs, receiveNzxtConfig } = appSlice.actions;
