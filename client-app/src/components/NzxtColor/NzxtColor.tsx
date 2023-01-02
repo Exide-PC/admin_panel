@@ -1,8 +1,8 @@
 import _ from "lodash";
 import { toast } from "react-hot-toast";
-import { Col, FormGroup, Input, Label, Row } from "reactstrap";
+import { Col, DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, Label, Row, UncontrolledDropdown } from "reactstrap";
 import { RadioButton } from "../common/RadioButton";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
 import { AppDispatch } from "../../app/store";
 import { nzxtActions, useNzxtConfig } from "../../features/nzxt/nzxt-logic";
@@ -71,19 +71,17 @@ type Modifiers = {
 const defaultColor = '#d600ff';
 
 interface NzxtColorEditorProps {
-    initConfig: NzxtConfig;
-    initColor: AnyColor;
-    initModifiers: Modifiers;
+    configs: NzxtConfig[];
+    activeConfig: NzxtConfig;
 }
 
-const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEditorProps) => {
+const NzxtColorEditor = ({ configs, activeConfig }: NzxtColorEditorProps) => {
 
     const dispatch = useAppDispatch();
 
-    const [config, setConfig] = useState(initConfig);
-    const [color, setColor] = useState<AnyColor>(initColor);
-    const [modifiers, setModifiers] = useState<Modifiers>(initModifiers)
-    const [saveToDb, setSaveToDb] = useState<boolean>(true);
+    const [config, setConfig] = useState(activeConfig);
+    const [color, setColor] = useState<AnyColor>(() => parseColor(activeConfig.color_args)[0]);
+    const [modifiers, setModifiers] = useState<Modifiers>(() => parseColor(activeConfig.color_args)[1]);
     const [anyChanges, setAnyChanges] = useState<boolean>(false)
 
     useEffect(() => {
@@ -92,11 +90,11 @@ const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEdit
         const args = `${convertColor(color)} ${convertModifiers(modifiers)}`;
         const newConfig: NzxtConfig = { ...config, color_args: args };
 
-        const debounce = _.debounce(() => submitColor(newConfig, saveToDb, dispatch), 200);
+        const debounce = _.debounce(() => submitColor(newConfig, dispatch), 200);
         debounce();
 
         return debounce.cancel;
-    }, [color, modifiers, config, saveToDb, anyChanges]);
+    }, [color, modifiers, config, anyChanges]);
 
     const handleModifiers = (v: Modifiers) => {
         setModifiers(v);
@@ -162,19 +160,23 @@ const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEdit
         });
     }
 
-    const handleSaveToDb = (v: boolean) => {
-        setSaveToDb(v);
-        setAnyChanges(true);
-    }
-
     const handleNightStart = (v: number) => {
-         setConfig(prev => ({ ...prev, night_hours_start: v }))
+         setConfig(prev => ({ ...prev, night_hours_start: coerceHour(v) }))
          setAnyChanges(true);
     }
 
     const handleNightEnd = (v: number) => {
-         setConfig(prev => ({ ...prev, night_hours_end: v }))
+         setConfig(prev => ({ ...prev, night_hours_end: coerceHour(v) }))
          setAnyChanges(true);
+    }
+
+    const handleConfig = (v: NzxtConfig) => {
+        const [newColor, newModifiers] = parseColor(v.color_args);
+
+        setConfig(v);
+        setColor(newColor);
+        setModifiers(newModifiers);
+        setAnyChanges(true);
     }
 
     const colorCount = colorMeta[color.type];
@@ -184,27 +186,29 @@ const NzxtColorEditor = ({ initConfig, initColor, initModifiers }: NzxtColorEdit
         <div>
             <FormGroup>
                 <FormGroup>
-                    <FormGroup check>
-                        <Input
-                            type="checkbox"
-                            checked={saveToDb}
-                            onChange={e => handleSaveToDb(e.target.checked)}
-                        />
-                        {' '}
-                        <Label check>
-                            Save to database
-                        </Label>
-                    </FormGroup>
+                    <UncontrolledDropdown>
+                        <DropdownToggle caret>
+                            Mode {configs.findIndex(c => c.id === config.id) + 1}
+                        </DropdownToggle>
+                        <DropdownMenu dark>
+                            {configs.map((c, i) => (
+                                <DropdownItem key={c.id} onClick={() => handleConfig(c)}>
+                                    Mode {i + 1}
+                                </DropdownItem>
+                            ))}
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
                 </FormGroup>
-                <FormGroup style={{ width: 300 }}>
-                    <Row>
+                <FormGroup style={{ width: 200 }}>
+                    <Label>Night Hours</Label>
+                    <FormGroup row>
                         <Col>
                             <Input type="number" value={config.night_hours_start} onChange={e => handleNightStart(e.target.valueAsNumber)}/>
                         </Col>
                         <Col>
                             <Input type="number" value={config.night_hours_end} onChange={e => handleNightEnd(e.target.valueAsNumber)}/>
                         </Col>
-                    </Row>
+                    </FormGroup>
                 </FormGroup>
                 <Row>
                     <Col xs={12} md={4}>
@@ -311,9 +315,9 @@ const convertModifiers = (modifiers: Modifiers) => {
     return `--speed ${modifiers.speed} --direction ${modifiers.direction}`
 }
 
-const submitColor = async (config: NzxtConfig, saveToDb: boolean, dispatch: AppDispatch) => {
+const submitColor = async (config: NzxtConfig, dispatch: AppDispatch) => {
     await toast.promise(
-        dispatch(nzxtActions.updateNzxtConfig(config, saveToDb)), {
+        dispatch(nzxtActions.updateNzxtConfig(config)), {
             loading: `Saving...`,
             success: `Saved`,
             error: `Failed to save`,
@@ -368,18 +372,23 @@ const NzxtColorPage = () => {
 
     const [currentConfig, configs, isLoaded] = useNzxtConfig();
 
-    if (!isLoaded || !currentConfig) {
+    if (!isLoaded || !currentConfig || !currentConfig) {
         return <></> // loading
     }
 
-    const [initColor, initModifiers] = parseColor(currentConfig.color_args);
-
     return (
         <NzxtColorEditor
-            initConfig={currentConfig}
-            initColor={initColor}
-            initModifiers={initModifiers}
+            configs={configs}
+            activeConfig={currentConfig}
         />
+    )
+}
+
+const coerceHour = (v: number) => {
+    return (
+        v < 0 ? 23 :
+        v > 23 ? 0 :
+        v
     )
 }
 

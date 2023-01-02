@@ -74,20 +74,18 @@ def run_api_server(container: Container):
             json = request.json
 
             config = NzxtConfig(
-                json['config']['id'],
-                json['config']['color_args'],
-                json['config']['night_hours_start'],
-                json['config']['night_hours_end']
+                json['id'],
+                json['color_args'],
+                json['night_hours_start'],
+                json['night_hours_end']
             )
 
             container.nzxt_config_service().update(config)
-
-            synchronizer = container.nzxt_worker_synchronizer()
-            synchronizer.config = config
+            container.appsettings_service().update_nzxt_config_id(config.id)
+            container.nzxt_worker_synchronizer().config = config
 
             if (not config.is_night_hours()):
                 container.nzxt_led_service().set_led(config.color_args)
-                synchronizer.active_color = config.color_args
 
             return ('', HTTPStatus.NO_CONTENT)
 

@@ -10,6 +10,11 @@ INSERT INTO nzxt_config (id, color_args, night_hours_start, night_hours_end) VAL
     'super-rainbow --speed slowest --direction forward',
     0,
     0
+), (
+    'b11bf778-0503-4b22-946a-b910812554f2',
+    'super-rainbow --speed slowest --direction forward',
+    0,
+    0
 );
 
 CREATE TABLE app_settings (

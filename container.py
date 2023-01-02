@@ -43,7 +43,7 @@ class Container(containers.DeclarativeContainer):
         MaintenanceService
     )
 
-    nzxt_led_service = providers.Factory(
+    nzxt_led_service = providers.Singleton(
         NzxtLedService
     )
 

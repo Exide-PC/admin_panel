@@ -14,8 +14,5 @@ class AppSettingsRepository:
         return AppSettings(record['nzxt_config_id'])
     
     def update(self, settings: AppSettings):
-        pass
-        # record = (settings.nzxt_color, settings.nzxt_night_hours_start, settings.nzxt_night_hours_end)
-
-        # self._con.cursor().execute('UPDATE app_settings SET nzxt_color = ?, nzxt_night_hours_start =? , nzxt_night_hours_end = ?', record)
-        # self._con.commit()
+        self._con.cursor().execute('UPDATE app_settings SET nzxt_config_id = ?', (settings.nzxt_config_id,))
+        self._con.commit()

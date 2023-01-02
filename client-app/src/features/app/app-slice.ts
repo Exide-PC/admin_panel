@@ -33,8 +33,14 @@ export const appSlice = createSlice({
         receiveSettings: (state, action: PayloadAction<AppSettings>) => {
             state.settings = action.payload;
         },
+        receiveSettingsPart: (state, action: PayloadAction<Partial<AppSettings>>) => {
+            state.settings = {
+                ...state.settings,
+                ...action.payload
+            };
+        },
     },
 });
 
 export default appSlice.reducer;
-export const { receiveSettings, receiveAppState } = appSlice.actions;
+export const { receiveSettings, receiveAppState, receiveSettingsPart } = appSlice.actions;

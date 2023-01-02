@@ -7,6 +7,8 @@ class AppSettingsService:
     
     def get(self) -> AppSettings:
         return self._repo.get()
-
-    def update(self, settings: AppSettings):
-        return self._repo.update(settings)
+    
+    def update_nzxt_config_id(self, id: str):
+        settings = self._repo.get()
+        settings.nzxt_config_id = id
+        self._repo.update(settings)
