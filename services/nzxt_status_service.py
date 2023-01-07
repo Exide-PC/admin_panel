@@ -12,11 +12,15 @@ class NzxtStatusService:
         pass
 
     def get_status(self):
-        result = subprocess.run(['sensors'], stdout=subprocess.PIPE)
-        lines = result.stdout.decode('utf-8').split('\n')
+        try:
+            result = subprocess.run(['sensors'], stdout=subprocess.PIPE)
+            lines = result.stdout.decode('utf-8').split('\n')
 
-        cpu_line = next(l for l in lines if l.startswith('Package id 0'))
-        matches = re.findall(r'(\d+\.\d+)°C', cpu_line)
-        numbers = list(map(lambda m: float(m), matches))
+            cpu_line = next(l for l in lines if l.startswith('Package id 0'))
+            matches = re.findall(r'(\d+\.\d+)°C', cpu_line)
+            numbers = list(map(lambda m: float(m), matches))
 
-        return NzxtStatus(numbers[0])
+            return NzxtStatus(numbers[0])
+
+        except:
+            return NzxtStatus(-1) # for development on windows

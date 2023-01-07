@@ -1,10 +1,12 @@
 from dependency_injector import containers, providers
+from env import Environment
 from repository.appsettings_repository import AppSettingsRepository
 
 from repository.db import init_db
 from repository.nzxt_config_repository import NzxtConfigRepository
 from services.appsettings_service import AppSettingsService
 from services.maintenance_service import MaintenanceService
+from services.notification_service import NotificationService
 from services.nzxt_config_service import NzxtConfigService
 from services.nzxt_service import NzxtLedService
 from services.nzxt_status_service import NzxtStatusService
@@ -17,6 +19,13 @@ class Container(containers.DeclarativeContainer):
         init_db,
         db_name='database.db',
         migrations_dir='repository/migrations'
+    )
+
+    env = providers.Singleton(Environment)
+
+    notification_service = providers.Factory(
+        NotificationService,
+        env=env
     )
 
     appsettings_repo = providers.Factory(
@@ -48,12 +57,14 @@ class Container(containers.DeclarativeContainer):
         NzxtLedService
     )
 
-    nzxt_worker = providers.Singleton(
-        NzxtWorker,
-        led_service=nzxt_led_service,
-        initial_config=nzxt_config_service().get_current()
-    )
-
     nzxt_status_service = providers.Factory(
         NzxtStatusService
+    )
+
+    nzxt_worker = providers.Singleton(
+        NzxtWorker,
+        initial_config=nzxt_config_service().get_current(),
+        led_service=nzxt_led_service,
+        status_service=nzxt_status_service,
+        notification_service=notification_service
     )
