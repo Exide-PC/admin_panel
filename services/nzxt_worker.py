@@ -23,12 +23,12 @@ class NzxtWorker:
         self._config = config or self._config
 
         try:
-            if (config.is_night_hours()):
+            if (self._config.is_night_hours()):
                 self._controller.set_led('off')
                 self._controller.set_fan_speed(50)
             else:
-                self._controller.set_led(config.color_args)
-                self._controller.set_fan_speed(config.fan_speed)
+                self._controller.set_led(self._config.color_args)
+                self._controller.set_fan_speed(self._config.fan_speed)
             
             status = self._status_service.get_status()
 
