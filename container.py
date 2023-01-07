@@ -7,6 +7,7 @@ from services.appsettings_service import AppSettingsService
 from services.maintenance_service import MaintenanceService
 from services.nzxt_config_service import NzxtConfigService
 from services.nzxt_service import NzxtLedService
+from services.nzxt_status_service import NzxtStatusService
 from services.nzxt_worker import NzxtWorker
 
 
@@ -51,4 +52,8 @@ class Container(containers.DeclarativeContainer):
         NzxtWorker,
         led_service=nzxt_led_service,
         initial_config=nzxt_config_service().get_current()
+    )
+
+    nzxt_status_service = providers.Factory(
+        NzxtStatusService
     )

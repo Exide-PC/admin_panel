@@ -4,17 +4,18 @@ import _ from "lodash";
 import toast from "react-hot-toast";
 import { useAppDispatch } from "../../app/hooks";
 import { AppDispatch } from "../../app/store";
-import { nzxtActions, useNzxtConfig } from "../../features/nzxt/nzxt-logic";
-import { NzxtConfig } from "../../features/nzxt/nzxt-slice";
+import { nzxtActions, useNzxtConfig, useNzxtStatus } from "../../features/nzxt/nzxt-logic";
+import { NzxtConfig, NzxtStatus } from "../../features/nzxt/nzxt-slice";
 import NzxtColor from "./NzxtColor";
 import { DropdownItem, DropdownMenu, DropdownToggle, FormGroup, UncontrolledDropdown } from "reactstrap";
 
 interface Props {
     configs: NzxtConfig[];
     initialConfig: NzxtConfig;
+    status: NzxtStatus;
 }   
 
-const NzxtPage = ({ configs, initialConfig }: Props) => {
+const NzxtPage = ({ configs, initialConfig, status }: Props) => {
     const dispatch = useAppDispatch();
     
     const [config, setConfig] = useState<NzxtConfig>(initialConfig);
@@ -32,6 +33,9 @@ const NzxtPage = ({ configs, initialConfig }: Props) => {
 
     return (
         <FormGroup>
+            <h3>
+                Temp: {status.cpu_temperature}
+            </h3>
             <FormGroup>
                 <UncontrolledDropdown>
                     <DropdownToggle caret>
@@ -68,9 +72,10 @@ const submitColor = async (config: NzxtConfig, dispatch: AppDispatch) => {
 
 const NzxtPageWrapper = () => {
 
-    const [currentConfig, configs, isLoaded] = useNzxtConfig();
+    const [currentConfig, configs, isConfigLoaded] = useNzxtConfig();
+    const [status, isStatusLoaded] = useNzxtStatus();
 
-    if (!isLoaded || !currentConfig || !currentConfig) {
+    if (!isConfigLoaded || !currentConfig || !currentConfig || !isStatusLoaded) {
         return <></> // loading
     }
 
@@ -78,6 +83,7 @@ const NzxtPageWrapper = () => {
         <NzxtPage
             configs={configs}
             initialConfig={currentConfig}
+            status={status}
         />
     )
 }

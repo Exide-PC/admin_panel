@@ -57,9 +57,9 @@ def run_api_server(container: Container):
             'nzxt_config_id': appsettings.nzxt_config_id
         })
 
-    @app.route('/api/nzxt', methods=['GET', 'PUT'])
+    @app.route('/api/nzxt/config', methods=['GET', 'PUT'])
     @token_auth()
-    def nzxt():
+    def nzxt_config():
         if (request.method == 'GET'):
             configs = container.nzxt_config_service().list()
 
@@ -87,6 +87,15 @@ def run_api_server(container: Container):
             container.nzxt_worker().iteration(config)
 
             return ('', HTTPStatus.NO_CONTENT)
+
+    @app.route('/api/nzxt/status', methods=['GET'])
+    @token_auth()
+    def nzxt_status():
+        status = container.nzxt_status_service().get_status()
+
+        return jsonify({
+            'cpu_temperature': status.cpu_temperature
+        })
 
     @app.route('/api/maintenance', methods=['GET', 'POST'])
     @token_auth()

@@ -8,12 +8,20 @@ export interface NzxtConfig {
     fan_speed: number;
 }
 
+export interface NzxtStatus {
+    cpu_temperature: number;
+}
+
 export interface AppState {
     configs: NzxtConfig[];
+    status: NzxtStatus;
 }
 
 const initialState: AppState = {
     configs: [],
+    status: {
+        cpu_temperature: -1,
+    }
 };
 
 export const appSlice = createSlice({
@@ -33,8 +41,11 @@ export const appSlice = createSlice({
                 state.configs = state.configs.map((c, i) => i === index ? action.payload : c);
             }
         },
+        receiveNzxtStatus: (state, action: PayloadAction<NzxtStatus>) => {
+            state.status = action.payload;
+        },
     },
 });
 
 export default appSlice.reducer;
-export const { receiveNzxtConfigs, receiveNzxtConfig } = appSlice.actions;
+export const { receiveNzxtConfigs, receiveNzxtConfig, receiveNzxtStatus } = appSlice.actions;

@@ -18,3 +18,13 @@ export const getIsNzxtConfigsLoaded = createSelector(
     [getNzxtConfigs],
     configs => !!configs.length
 )
+
+export const getNzxtStatus = createSelector(
+    [getSlice],
+    slice => slice.status
+)
+
+export const getIsNzxtStatusLoaded = createSelector(
+    [getNzxtStatus],
+    status => status.cpu_temperature !== -1
+)
