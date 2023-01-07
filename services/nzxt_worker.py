@@ -1,5 +1,4 @@
 import time
-from datetime import datetime
 
 from repository.nzxt_config_repository import NzxtConfig
 from services.nzxt_service import NzxtLedService
@@ -8,16 +7,19 @@ from services.nzxt_service import NzxtLedService
 class NzxtWorkerSynchronizer:
     def __init__(self, config: NzxtConfig) -> None:
         self.config = config
-        self.active_color = ''
 
-def run_nzxt_worker(synchronizer: NzxtWorkerSynchronizer, led_service: NzxtLedService):
-    while (True):
-        current_config = synchronizer.config
-        now = datetime.now()
-
-        if (now.hour >= current_config.night_hours_start and now.hour < current_config.night_hours_end):
-            led_service.set_led('off')
+class NzxtWorker:
+    def __init__(self, led_service: NzxtLedService, initial_config: NzxtConfig) -> None:
+        self._led_service = led_service
+        self._config = initial_config
+    
+    def iteration(self, config: NzxtConfig):
+        if (config.is_night_hours()):
+            self._led_service.set_led('off')
         else:
-            led_service.set_led(current_config.color_args)
+            self._led_service.set_led(config.color_args)
 
-        time.sleep(10)
+    def loop(self):
+        while (True):
+            self.iteration(self._config)
+            time.sleep(60)

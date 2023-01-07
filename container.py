@@ -7,7 +7,7 @@ from services.appsettings_service import AppSettingsService
 from services.maintenance_service import MaintenanceService
 from services.nzxt_config_service import NzxtConfigService
 from services.nzxt_service import NzxtLedService
-from services.nzxt_worker import NzxtWorkerSynchronizer
+from services.nzxt_worker import NzxtWorker
 
 
 class Container(containers.DeclarativeContainer):
@@ -47,7 +47,8 @@ class Container(containers.DeclarativeContainer):
         NzxtLedService
     )
 
-    nzxt_worker_synchronizer = providers.Singleton(
-        NzxtWorkerSynchronizer,
-        config=nzxt_config_service().get_current()
+    nzxt_worker = providers.Singleton(
+        NzxtWorker,
+        led_service=nzxt_led_service,
+        initial_config=nzxt_config_service().get_current()
     )

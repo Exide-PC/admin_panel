@@ -11,7 +11,6 @@ from flask_cors import CORS
 from container import Container
 from env import env
 from repository.nzxt_config_repository import NzxtConfig
-from services.nzxt_worker import run_nzxt_worker
 
 
 def run_api_server(container: Container):
@@ -21,7 +20,7 @@ def run_api_server(container: Container):
 
     CORS(app)
 
-    thread = Thread(target=run_nzxt_worker, args=(container.nzxt_worker_synchronizer(), container.nzxt_led_service()))
+    thread = Thread(target=container.nzxt_worker().loop)
     thread.daemon = True
     thread.start()
 
@@ -82,10 +81,8 @@ def run_api_server(container: Container):
 
             container.nzxt_config_service().update(config)
             container.appsettings_service().update_nzxt_config_id(config.id)
-            container.nzxt_worker_synchronizer().config = config
 
-            if (not config.is_night_hours()):
-                container.nzxt_led_service().set_led(config.color_args)
+            container.nzxt_worker().iteration(config)
 
             return ('', HTTPStatus.NO_CONTENT)
 
