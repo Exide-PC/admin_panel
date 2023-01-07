@@ -1,0 +1,1 @@
+ALTER TABLE nzxt_config ADD fan_speed INTEGER NOT NULL DEFAULT 50;

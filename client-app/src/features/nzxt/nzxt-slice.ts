@@ -5,6 +5,7 @@ export interface NzxtConfig {
     color_args: string;
     night_hours_start: number;
     night_hours_end: number;
+    fan_speed: number;
 }
 
 export interface AppState {

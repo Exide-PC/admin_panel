@@ -67,7 +67,8 @@ def run_api_server(container: Container):
                 'id': c.id,
                 'color_args': c.color_args,
                 'night_hours_start': c.night_hours_start,
-                'night_hours_end': c.night_hours_end
+                'night_hours_end': c.night_hours_end,
+                'fan_speed': c.fan_speed
             }, configs)))
         else:
             json = request.json
@@ -76,7 +77,8 @@ def run_api_server(container: Container):
                 json['id'],
                 json['color_args'],
                 json['night_hours_start'],
-                json['night_hours_end']
+                json['night_hours_end'],
+                json['fan_speed']
             )
 
             container.nzxt_config_service().update(config)
