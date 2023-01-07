@@ -5,7 +5,7 @@ import { RadioButton } from "../common/RadioButton";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
 import { AppDispatch } from "../../app/store";
-import { nzxtActions, useNzxtConfig } from "../../features/nzxt/nzxt-logic";
+import { nzxtActions } from "../../features/nzxt/nzxt-logic";
 import { NzxtConfig } from "../../features/nzxt/nzxt-slice";
 
 // https://github.com/liquidctl/liquidctl/blob/main/docs/nzxt-hue2-guide.md
@@ -70,12 +70,12 @@ type Modifiers = {
 
 const defaultColor = '#d600ff';
 
-interface NzxtColorEditorProps {
+interface NzxtColorProps {
     configs: NzxtConfig[];
     activeConfig: NzxtConfig;
 }
 
-const NzxtColorEditor = ({ configs, activeConfig }: NzxtColorEditorProps) => {
+const NzxtColor = ({ configs, activeConfig }: NzxtColorProps) => {
 
     const dispatch = useAppDispatch();
 
@@ -368,22 +368,6 @@ const parseColor = (args: string): [AnyColor, Modifiers] => {
     return [color, modifiers];
 }
 
-const NzxtColorPage = () => {
-
-    const [currentConfig, configs, isLoaded] = useNzxtConfig();
-
-    if (!isLoaded || !currentConfig || !currentConfig) {
-        return <></> // loading
-    }
-
-    return (
-        <NzxtColorEditor
-            configs={configs}
-            activeConfig={currentConfig}
-        />
-    )
-}
-
 const coerceHour = (v: number) => {
     return (
         v < 0 ? 23 :
@@ -392,4 +376,4 @@ const coerceHour = (v: number) => {
     )
 }
 
-export default NzxtColorPage;
+export default NzxtColor;
