@@ -28,6 +28,8 @@ class NzxtWorker:
             self.iteration(self._config)
 
             status = self._status_service.get_status()
-            self._notification_service.send(f'CPU temperature: ${status.cpu_temperature}°C')
+
+            if (status.cpu_temperature > 40):
+                self._notification_service.send(f'CPU temperature: <b>{status.cpu_temperature}°C</b>')
             
             time.sleep(60)
