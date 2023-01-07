@@ -75,7 +75,7 @@ const NzxtPageWrapper = () => {
     const [currentConfig, configs, isConfigLoaded] = useNzxtConfig();
     const [status, isStatusLoaded] = useNzxtStatus();
 
-    if (!isConfigLoaded || !currentConfig || !currentConfig || !isStatusLoaded) {
+    if (!isConfigLoaded || !currentConfig || !isStatusLoaded) {
         return <></> // loading
     }
 

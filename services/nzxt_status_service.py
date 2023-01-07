@@ -23,4 +23,4 @@ class NzxtStatusService:
             return NzxtStatus(numbers[0])
 
         except:
-            return NzxtStatus(-1) # for development on windows
+            return NzxtStatus(0) # for development on windows
