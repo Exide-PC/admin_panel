@@ -1,11 +1,6 @@
 import _ from "lodash";
-import { toast } from "react-hot-toast";
-import { Col, DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, Label, Row, UncontrolledDropdown } from "reactstrap";
+import { Col, FormGroup, Input, Label, Row } from "reactstrap";
 import { RadioButton } from "../common/RadioButton";
-import { useEffect, useState } from "react";
-import { useAppDispatch } from "../../app/hooks";
-import { AppDispatch } from "../../app/store";
-import { nzxtActions } from "../../features/nzxt/nzxt-logic";
 import { NzxtConfig } from "../../features/nzxt/nzxt-slice";
 
 // https://github.com/liquidctl/liquidctl/blob/main/docs/nzxt-hue2-guide.md
@@ -71,34 +66,24 @@ type Modifiers = {
 const defaultColor = '#d600ff';
 
 interface NzxtColorProps {
-    configs: NzxtConfig[];
-    activeConfig: NzxtConfig;
+    config: NzxtConfig;
+    onChange: (c: NzxtConfig) => void;
 }
 
-const NzxtColor = ({ configs, activeConfig }: NzxtColorProps) => {
+const NzxtColor = ({ config, onChange }: NzxtColorProps) => {
 
-    const dispatch = useAppDispatch();
+    const [color, modifiers] = parseColor(config.color_args);
 
-    const [config, setConfig] = useState(activeConfig);
-    const [color, setColor] = useState<AnyColor>(() => parseColor(activeConfig.color_args)[0]);
-    const [modifiers, setModifiers] = useState<Modifiers>(() => parseColor(activeConfig.color_args)[1]);
-    const [anyChanges, setAnyChanges] = useState<boolean>(false)
-
-    useEffect(() => {
-        if (!anyChanges) return;
-
-        const args = `${convertColor(color)} ${convertModifiers(modifiers)}`;
+    const handleColor = (v: AnyColor) => {
+        const args = formatColorArgs(v, modifiers);
         const newConfig: NzxtConfig = { ...config, color_args: args };
-
-        const debounce = _.debounce(() => submitColor(newConfig, dispatch), 200);
-        debounce();
-
-        return debounce.cancel;
-    }, [color, modifiers, config, anyChanges]);
+        onChange(newConfig);
+    }
 
     const handleModifiers = (v: Modifiers) => {
-        setModifiers(v);
-        setAnyChanges(true);
+        const args = formatColorArgs(color, v);
+        const newConfig: NzxtConfig = { ...config, color_args: args };
+        onChange(newConfig);
     }
 
     const handleColorType = (type: AnyColor['type']) => {
@@ -106,162 +91,127 @@ const NzxtColor = ({ configs, activeConfig }: NzxtColorProps) => {
         const colors: string[] = initColors(count);
 
         if (!hasLength(type)) {
-            setColor({
+            handleColor({
                 type: type,
                 colors: colors,
             });
         }
         else {
-            setColor({
+            handleColor({
                 type: type,
                 colors: colors,
                 length: 3,
             });
         }
-
-        setAnyChanges(true);
     }
 
     const handleColorAt = (index: number, v: string) => {
-        setColor(prev => ({
-            ...prev,
-            colors: prev.colors.map((c, i) => i !== index ? c : v),
-        }));
-
-        setAnyChanges(true);
+        handleColor({
+            ...color,
+            colors: color.colors.map((c, i) => i !== index ? c : v),
+        })
     }
 
     const handleLength = (length: number) => {
-        setColor(prev => {
-            if (!hasLength(prev))
-                return prev;
+        if (!hasLength(color))
+            return;
 
-            return {
-                type: prev.type,
-                colors: prev.colors,
-                length: length
-            }
+        handleColor({
+            ...color,
+            type: color.type,
+            colors: color.colors,
+            length: length
         })
-        setAnyChanges(true);
     }
 
     const handleColorCount = (count: number) => {
-        setColor(prev => {
-            const prevColors = prev.colors;
+        const prevColors = color.colors;
 
-            const newColors = count < prevColors.length
-                ? prevColors.slice(0, count)
-                : [...prevColors, ...initColors(count - prevColors.length)]
+        const newColors = count < prevColors.length
+            ? prevColors.slice(0, count)
+            : [...prevColors, ...initColors(count - prevColors.length)]
 
-            return ({
-                ...prev,
-                colors: newColors,
-            })
-        });
+        handleColor({
+            ...color,
+            colors: newColors,
+        })
     }
 
     const handleNightStart = (v: number) => {
-         setConfig(prev => ({ ...prev, night_hours_start: coerceHour(v) }))
-         setAnyChanges(true);
+        onChange({ ...config, night_hours_start: coerceHour(v) })
     }
 
     const handleNightEnd = (v: number) => {
-         setConfig(prev => ({ ...prev, night_hours_end: coerceHour(v) }))
-         setAnyChanges(true);
-    }
-
-    const handleConfig = (v: NzxtConfig) => {
-        const [newColor, newModifiers] = parseColor(v.color_args);
-
-        setConfig(v);
-        setColor(newColor);
-        setModifiers(newModifiers);
-        setAnyChanges(true);
+        onChange({ ...config, night_hours_end: coerceHour(v) })
     }
 
     const colorCount = colorMeta[color.type];
     const showCountInput = colorCount.min !== colorCount.max;
 
     return (
-        <div>
-            <FormGroup>
-                <FormGroup>
-                    <UncontrolledDropdown>
-                        <DropdownToggle caret>
-                            Mode {configs.findIndex(c => c.id === config.id) + 1}
-                        </DropdownToggle>
-                        <DropdownMenu dark>
-                            {configs.map((c, i) => (
-                                <DropdownItem key={c.id} onClick={() => handleConfig(c)}>
-                                    Mode {i + 1}
-                                </DropdownItem>
-                            ))}
-                        </DropdownMenu>
-                    </UncontrolledDropdown>
+        <FormGroup>
+            <FormGroup style={{ width: 200 }}>
+                <Label>Night Hours</Label>
+                <FormGroup row>
+                    <Col>
+                        <Input type="number" value={config.night_hours_start} onChange={e => handleNightStart(e.target.valueAsNumber)}/>
+                    </Col>
+                    <Col>
+                        <Input type="number" value={config.night_hours_end} onChange={e => handleNightEnd(e.target.valueAsNumber)}/>
+                    </Col>
                 </FormGroup>
-                <FormGroup style={{ width: 200 }}>
-                    <Label>Night Hours</Label>
-                    <FormGroup row>
-                        <Col>
-                            <Input type="number" value={config.night_hours_start} onChange={e => handleNightStart(e.target.valueAsNumber)}/>
-                        </Col>
-                        <Col>
-                            <Input type="number" value={config.night_hours_end} onChange={e => handleNightEnd(e.target.valueAsNumber)}/>
-                        </Col>
-                    </FormGroup>
-                </FormGroup>
-                <Row>
-                    <Col xs={12} md={4}>
-                        {colorTypes.map(t => (
-                            <RadioButton
-                                key={t}
-                                label={getColorTypeLabel(t)}
-                                checked={color.type === t}
-                                onClick={() => handleColorType(t)}
-                            />
-                        ))}
-                    </Col>
-                    <Col xs={6} md={4}>
-                        <RadioButton
-                            label="Slowest"
-                            checked={modifiers.speed === 'slowest'}
-                            onClick={() => handleModifiers({ ...modifiers, speed: 'slowest' })}
-                        />
-                        <RadioButton
-                            label="Slower"
-                            checked={modifiers.speed === 'slower'}
-                            onClick={() => handleModifiers({ ...modifiers, speed: 'slower' })}
-                        />
-                        <RadioButton
-                            label="Normal"
-                            checked={modifiers.speed === 'normal'}
-                            onClick={() => handleModifiers({ ...modifiers, speed: 'normal' })}
-                        />
-                        <RadioButton
-                            label="Faster"
-                            checked={modifiers.speed === 'faster'}
-                            onClick={() => handleModifiers({ ...modifiers, speed: 'faster' })}
-                        />
-                        <RadioButton
-                            label="Fastest"
-                            checked={modifiers.speed === 'fastest'}
-                            onClick={() => handleModifiers({ ...modifiers, speed: 'fastest' })}
-                        />
-                    </Col>
-                    <Col xs={6} md={4}>
-                        <RadioButton
-                            label="Forward"
-                            checked={modifiers.direction === 'forward'}
-                            onClick={() => handleModifiers({ ...modifiers, direction: 'forward' })}
-                        />
-                        <RadioButton
-                            label="Backward"
-                            checked={modifiers.direction === 'backward'}
-                            onClick={() => handleModifiers({ ...modifiers, direction: 'backward' })}
-                        />
-                    </Col>
-                </Row>
             </FormGroup>
+            <Row>
+                <Col xs={12} md={4}>
+                    {colorTypes.map(t => (
+                        <RadioButton
+                            key={t}
+                            label={getColorTypeLabel(t)}
+                            checked={color.type === t}
+                            onClick={() => handleColorType(t)}
+                        />
+                    ))}
+                </Col>
+                <Col xs={6} md={4}>
+                    <RadioButton
+                        label="Slowest"
+                        checked={modifiers.speed === 'slowest'}
+                        onClick={() => handleModifiers({ ...modifiers, speed: 'slowest' })}
+                    />
+                    <RadioButton
+                        label="Slower"
+                        checked={modifiers.speed === 'slower'}
+                        onClick={() => handleModifiers({ ...modifiers, speed: 'slower' })}
+                    />
+                    <RadioButton
+                        label="Normal"
+                        checked={modifiers.speed === 'normal'}
+                        onClick={() => handleModifiers({ ...modifiers, speed: 'normal' })}
+                    />
+                    <RadioButton
+                        label="Faster"
+                        checked={modifiers.speed === 'faster'}
+                        onClick={() => handleModifiers({ ...modifiers, speed: 'faster' })}
+                    />
+                    <RadioButton
+                        label="Fastest"
+                        checked={modifiers.speed === 'fastest'}
+                        onClick={() => handleModifiers({ ...modifiers, speed: 'fastest' })}
+                    />
+                </Col>
+                <Col xs={6} md={4}>
+                    <RadioButton
+                        label="Forward"
+                        checked={modifiers.direction === 'forward'}
+                        onClick={() => handleModifiers({ ...modifiers, direction: 'forward' })}
+                    />
+                    <RadioButton
+                        label="Backward"
+                        checked={modifiers.direction === 'backward'}
+                        onClick={() => handleModifiers({ ...modifiers, direction: 'backward' })}
+                    />
+                </Col>
+            </Row>
             <FormGroup>
                 {showCountInput && (
                     <FormGroup>
@@ -298,7 +248,7 @@ const NzxtColor = ({ configs, activeConfig }: NzxtColorProps) => {
                     />
                 ))}
             </FormGroup>
-        </div>
+        </FormGroup>
     )
 }
 
@@ -315,14 +265,8 @@ const convertModifiers = (modifiers: Modifiers) => {
     return `--speed ${modifiers.speed} --direction ${modifiers.direction}`
 }
 
-const submitColor = async (config: NzxtConfig, dispatch: AppDispatch) => {
-    await toast.promise(
-        dispatch(nzxtActions.updateNzxtConfig(config)), {
-            loading: `Saving...`,
-            success: `Saved`,
-            error: `Failed to save`,
-        }
-    );
+const formatColorArgs = (color: AnyColor, modifiers: Modifiers) => {
+    return `${convertColor(color)} ${convertModifiers(modifiers)}`;
 }
 
 const initColors = (count: number) => {
