@@ -17,6 +17,6 @@ class NzxtStatusService:
 
         cpu_line = next(l for l in lines if l.startswith('Package id 0'))
         matches = re.findall(r'(\d+\.\d+)°C', cpu_line)
-        numbers = list(map(lambda m: int(m), matches))
+        numbers = list(map(lambda m: float(m), matches))
 
         return NzxtStatus(numbers[0])
