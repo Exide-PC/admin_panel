@@ -1,3 +1,4 @@
+import logging
 import time
 from typing import Optional
 
@@ -33,7 +34,9 @@ class NzxtWorker:
 
             if (status.cpu_temperature > 40):
                 self._notification_service.send(f'CPU temperature: <b>{status.cpu_temperature}°C</b>')
-        except:
+
+        except Exception as e:
+            logging.error(f'Unknown error in worker: {e}')
             self._controller.set_led("pulse 6b0000 --speed fastest")
 
     def loop(self):
