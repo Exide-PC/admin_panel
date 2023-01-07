@@ -8,7 +8,7 @@ from services.appsettings_service import AppSettingsService
 from services.maintenance_service import MaintenanceService
 from services.notification_service import NotificationService
 from services.nzxt_config_service import NzxtConfigService
-from services.nzxt_service import NzxtLedService
+from services.nzxt_controller import NzxtController
 from services.nzxt_status_service import NzxtStatusService
 from services.nzxt_worker import NzxtWorker
 
@@ -53,8 +53,8 @@ class Container(containers.DeclarativeContainer):
         MaintenanceService
     )
 
-    nzxt_led_service = providers.Singleton(
-        NzxtLedService
+    nzxt_controller = providers.Singleton(
+        NzxtController
     )
 
     nzxt_status_service = providers.Factory(
@@ -64,7 +64,7 @@ class Container(containers.DeclarativeContainer):
     nzxt_worker = providers.Singleton(
         NzxtWorker,
         initial_config=nzxt_config_service().get_current(),
-        led_service=nzxt_led_service,
+        controller=nzxt_controller,
         status_service=nzxt_status_service,
         notification_service=notification_service
     )

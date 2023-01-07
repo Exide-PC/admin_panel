@@ -67,7 +67,7 @@ const defaultColor = '#d600ff';
 
 interface NzxtColorProps {
     config: NzxtConfig;
-    onChange: (c: NzxtConfig) => void;
+    onChange: (c: Partial<NzxtConfig>) => void;
 }
 
 const NzxtColor = ({ config, onChange }: NzxtColorProps) => {
@@ -76,14 +76,12 @@ const NzxtColor = ({ config, onChange }: NzxtColorProps) => {
 
     const handleColor = (v: AnyColor) => {
         const args = formatColorArgs(v, modifiers);
-        const newConfig: NzxtConfig = { ...config, color_args: args };
-        onChange(newConfig);
+        onChange({ color_args: args });
     }
 
     const handleModifiers = (v: Modifiers) => {
         const args = formatColorArgs(color, v);
-        const newConfig: NzxtConfig = { ...config, color_args: args };
-        onChange(newConfig);
+        onChange({ color_args: args });
     }
 
     const handleColorType = (type: AnyColor['type']) => {
@@ -138,11 +136,15 @@ const NzxtColor = ({ config, onChange }: NzxtColorProps) => {
     }
 
     const handleNightStart = (v: number) => {
-        onChange({ ...config, night_hours_start: coerceHour(v) })
+        onChange({ night_hours_start: coerceHour(v) });
     }
 
     const handleNightEnd = (v: number) => {
-        onChange({ ...config, night_hours_end: coerceHour(v) })
+        onChange({ night_hours_end: coerceHour(v) });
+    }
+
+    const handleFanSpeed = (v: number) => {
+        onChange({ fan_speed: v });
     }
 
     const colorCount = colorMeta[color.type];
@@ -160,6 +162,17 @@ const NzxtColor = ({ config, onChange }: NzxtColorProps) => {
                         <Input type="number" value={config.night_hours_end} onChange={e => handleNightEnd(e.target.valueAsNumber)}/>
                     </Col>
                 </FormGroup>
+            </FormGroup>
+            <FormGroup style={{ width: 200 }}>
+                <Label>Fan speed: {config.fan_speed}%</Label>
+                <Input
+                    name="range"
+                    type="range"
+                    value={config.fan_speed}
+                    onChange={e => handleFanSpeed(e.target.valueAsNumber)}
+                    min={20}
+                    max={100}
+                />
             </FormGroup>
             <Row>
                 <Col xs={12} md={4}>

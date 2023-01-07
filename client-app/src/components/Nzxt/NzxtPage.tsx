@@ -31,6 +31,10 @@ const NzxtPage = ({ configs, initialConfig, status }: Props) => {
         setConfig(newConfig);
     }
 
+    const handlePart = (part: Partial<NzxtConfig>) => {
+        handleChange({ ...config, ...part })
+    }
+
     return (
         <FormGroup>
             <h3>
@@ -53,7 +57,7 @@ const NzxtPage = ({ configs, initialConfig, status }: Props) => {
             <FormGroup>
                 <NzxtColor
                     config={config}
-                    onChange={handleChange}
+                    onChange={handlePart}
                 />
             </FormGroup>
         </FormGroup>
