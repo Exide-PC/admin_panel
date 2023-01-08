@@ -57,7 +57,7 @@ def run_api_server(container: Container):
             'nzxt_config_id': appsettings.nzxt_config_id
         })
 
-    @app.route('/api/nzxt/config', methods=['GET', 'PUT'])
+    @app.route('/api/nzxt/config', methods=['GET', 'POST', 'PUT', 'DELETE'])
     @token_auth()
     def nzxt_config():
         if (request.method == 'GET'):
@@ -70,7 +70,24 @@ def run_api_server(container: Container):
                 'night_hours_end': c.night_hours_end,
                 'fan_speed': c.fan_speed
             }, configs)))
-        else:
+        elif (request.method == 'POST'):
+            json = request.json
+
+            config = NzxtConfig(
+                json['id'],
+                json['color_args'],
+                json['night_hours_start'],
+                json['night_hours_end'],
+                json['fan_speed']
+            )
+
+            container.nzxt_config_service().create(config)
+            container.appsettings_service().update_nzxt_config_id(config.id)
+
+            container.nzxt_worker().iteration(config)
+
+            return ('', HTTPStatus.NO_CONTENT)
+        elif (request.method == 'PUT'):
             json = request.json
 
             config = NzxtConfig(
@@ -85,6 +102,18 @@ def run_api_server(container: Container):
             container.appsettings_service().update_nzxt_config_id(config.id)
 
             container.nzxt_worker().iteration(config)
+
+            return ('', HTTPStatus.NO_CONTENT)
+        elif (request.method == 'DELETE'):
+            config_id = request.json['id']
+
+            configs = container.nzxt_config_service().list()
+            next_config = next(c for c in configs if c.id != config_id)
+
+            container.appsettings_service().update_nzxt_config_id(next_config.id)
+            container.nzxt_config_service().delete(config_id)
+
+            container.nzxt_worker().iteration(next_config)
 
             return ('', HTTPStatus.NO_CONTENT)
 

@@ -278,7 +278,7 @@ const convertModifiers = (modifiers: Modifiers) => {
     return `--speed ${modifiers.speed} --direction ${modifiers.direction}`
 }
 
-const formatColorArgs = (color: AnyColor, modifiers: Modifiers) => {
+export const formatColorArgs = (color: AnyColor, modifiers: Modifiers) => {
     return `${convertColor(color)} ${convertModifiers(modifiers)}`;
 }
 

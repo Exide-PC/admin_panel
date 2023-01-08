@@ -22,8 +22,18 @@ class NzxtConfigRepository:
 
         return list(map(lambda r: NzxtConfig(r['id'], r['color_args'], r['night_hours_start'], r['night_hours_end'], r['fan_speed']), records))
 
+    def create(self, settings: NzxtConfig):
+        record = (settings.id, settings.color_args, settings.night_hours_start, settings.night_hours_end, settings.fan_speed)
+
+        self._con.cursor().execute('INSERT INTO nzxt_config (id, color_args, night_hours_start, night_hours_end, fan_speed) VALUES (?, ?, ?, ?, ?)', record)
+        self._con.commit()
+
     def update(self, settings: NzxtConfig):
         record = (settings.color_args, settings.night_hours_start, settings.night_hours_end, settings.fan_speed, settings.id)
 
         self._con.cursor().execute('UPDATE nzxt_config SET color_args = ?, night_hours_start = ?, night_hours_end = ?, fan_speed = ? WHERE id = ?', record)
+        self._con.commit()
+
+    def delete(self, id: str):
+        self._con.cursor().execute('DELETE FROM nzxt_config WHERE id = ?', (id,))
         self._con.commit()

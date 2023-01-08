@@ -41,6 +41,9 @@ export const appSlice = createSlice({
                 state.configs = state.configs.map((c, i) => i === index ? action.payload : c);
             }
         },
+        removeNzxtConfig: (state, action: PayloadAction<NzxtConfig['id']>) => {
+            state.configs = state.configs.filter(c => c.id !== action.payload);
+        },
         receiveNzxtStatus: (state, action: PayloadAction<NzxtStatus>) => {
             state.status = action.payload;
         },
@@ -48,4 +51,4 @@ export const appSlice = createSlice({
 });
 
 export default appSlice.reducer;
-export const { receiveNzxtConfigs, receiveNzxtConfig, receiveNzxtStatus } = appSlice.actions;
+export const { receiveNzxtConfigs, receiveNzxtConfig, removeNzxtConfig, receiveNzxtStatus } = appSlice.actions;
