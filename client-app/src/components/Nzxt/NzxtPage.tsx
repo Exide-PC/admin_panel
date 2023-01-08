@@ -97,7 +97,7 @@ const NzxtPage = ({ configs, initialConfig, status }: Props) => {
                     <Button outline onClick={handleDelete} disabled={configs.length < 2}>
                         Delete
                     </Button>
-                    <Button outline onClick={() => setIsNameEdit(prev => !prev)} disabled={configs.length < 2}>
+                    <Button outline onClick={() => setIsNameEdit(prev => !prev)}>
                         {!isNameEdit ? 'Rename' : 'Submit'}
                     </Button>
                 </InputGroup>
