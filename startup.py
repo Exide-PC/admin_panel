@@ -1,5 +1,3 @@
-import sys
-
 from api_server.api_server import run_api_server
 from container import Container
 

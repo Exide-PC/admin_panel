@@ -1,6 +1,7 @@
+# type: ignore
+
 import functools
 from http import HTTPStatus
-import os
 from threading import Thread
 from typing import Any
 import urllib

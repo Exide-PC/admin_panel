@@ -2,7 +2,7 @@ import re
 import subprocess
 
 class NzxtStatus:
-    def __init__(self, cpu_temperature: int) -> None:
+    def __init__(self, cpu_temperature: float) -> None:
         self.cpu_temperature = cpu_temperature
 
 # https://phoenixnap.com/kb/linux-cpu-temp

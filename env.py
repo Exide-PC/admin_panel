@@ -1,6 +1,7 @@
 import os
 from typing import Optional
-from dotenv import load_dotenv
+
+from dotenv import load_dotenv # type: ignore
 
 class Environment:
     def __init__(self):
