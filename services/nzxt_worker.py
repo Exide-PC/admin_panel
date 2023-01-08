@@ -23,12 +23,12 @@ class NzxtWorker:
         self._config = config or self._config
 
         try:
+            self._controller.set_fan_speed(self._config.fan_speed)
+
             if (self._config.is_night_hours()):
                 self._controller.set_led('off')
-                self._controller.set_fan_speed(50)
             else:
                 self._controller.set_led(self._config.color_args)
-                self._controller.set_fan_speed(self._config.fan_speed)
             
             status = self._status_service.get_status()
 
@@ -37,7 +37,9 @@ class NzxtWorker:
 
         except Exception as e:
             logging.error(f'Unknown error in worker: {e}')
+
             self._controller.set_led("pulse 6b0000 --speed fastest")
+            self._controller.set_fan_speed(50)
 
     def loop(self):
         while (True):
