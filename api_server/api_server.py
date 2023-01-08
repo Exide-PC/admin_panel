@@ -28,7 +28,7 @@ def run_api_server(container: Container):
     def token_auth():
         def demo_mode_auth_decorator(f: Any):
             @functools.wraps(f)
-            def decorator():
+            def decorator(*args, **kwargs):
                 auth_header = request.headers.get('Authorization')
 
                 if (not auth_header):
@@ -45,7 +45,7 @@ def run_api_server(container: Container):
                 if (not token_ok):
                     return ('Invalid token was provided', HTTPStatus.UNAUTHORIZED)
 
-                return f()
+                return f(*args, **kwargs)
             return decorator
         return demo_mode_auth_decorator
 
@@ -167,7 +167,7 @@ def run_api_server(container: Container):
         )))
 
     @app.route('/api/maintenance/journal/<id>', methods=['GET'])
-    # @token_auth()
+    @token_auth()
     def journal_logs(id: str):
         logs = container.journal_service().logs(id)
         return jsonify(logs)
