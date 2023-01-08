@@ -66,6 +66,7 @@ def run_api_server(container: Container):
 
             return jsonify(list(map(lambda c: {
                 'id': c.id,
+                'name': c.name,
                 'color_args': c.color_args,
                 'night_hours_start': c.night_hours_start,
                 'night_hours_end': c.night_hours_end,
@@ -76,6 +77,7 @@ def run_api_server(container: Container):
 
             config = NzxtConfig(
                 json['id'],
+                json['name'],
                 json['color_args'],
                 json['night_hours_start'],
                 json['night_hours_end'],
@@ -93,6 +95,7 @@ def run_api_server(container: Container):
 
             config = NzxtConfig(
                 json['id'],
+                json['name'],
                 json['color_args'],
                 json['night_hours_start'],
                 json['night_hours_end'],

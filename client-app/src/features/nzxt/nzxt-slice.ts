@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface NzxtConfig {
     id: string;
+    name: string;
     color_args: string;
     night_hours_start: number;
     night_hours_end: number;

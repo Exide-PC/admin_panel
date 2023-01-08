@@ -1,20 +1,19 @@
 CREATE TABLE nzxt_config (
     id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
     color_args TEXT NOT NULL,
     night_hours_start INTEGER NOT NULL,
-    night_hours_end INTEGER NOT NULL
+    night_hours_end INTEGER NOT NULL,
+    fan_speed INTEGER NOT NULL
 );
 
-INSERT INTO nzxt_config (id, color_args, night_hours_start, night_hours_end) VALUES (
+INSERT INTO nzxt_config (id, name, color_args, night_hours_start, night_hours_end, fan_speed) VALUES (
     'de6eee1f-6e57-40ae-8277-60303a42cd83',
+    'Default',
     'super-rainbow --speed slowest --direction forward',
     0,
-    0
-), (
-    'b11bf778-0503-4b22-946a-b910812554f2',
-    'super-rainbow --speed slowest --direction forward',
     0,
-    0
+    50
 );
 
 CREATE TABLE app_settings (
