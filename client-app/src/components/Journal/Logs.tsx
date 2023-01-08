@@ -12,21 +12,24 @@ const Logs = ({  }: Props) => {
 
     const [selectedJournal, setSelectedJournal] = useState<Journal | null>(null);
     const [logs, setLogs] = useState<string[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
     
     const [journals] = useJournals();
 
     const handleJournal = async (j: Journal) => {
         setSelectedJournal(j);
+        setLoading(true);
 
         const result = await fetchJournalLogs(j.id);
         setLogs(result);
+        setLoading(false);
     }
     
     return (
         <FormGroup>
             <FormGroup>
                 <UncontrolledDropdown>
-                    <DropdownToggle caret>
+                    <DropdownToggle caret disabled={loading}>
                         {selectedJournal?.name ?? '<Select>'}
                     </DropdownToggle>
                     <DropdownMenu dark>
