@@ -5,6 +5,7 @@ from dotenv import load_dotenv # type: ignore
 
 class Environment:
     def __init__(self):
+        self.is_windows = os.name == 'nt'
         self.token = os.getenv('TOKEN')
         self.listener = os.getenv('LISTENER')
         self.notification_url: Optional[str] = os.getenv('NOTIFICATION_URL')

@@ -7,3 +7,13 @@ export const getMaintenanceCommands = createSelector(
     [getSlice],
     slice => slice.commands
 )
+
+export const getJournals = createSelector(
+    [getSlice],
+    slice => slice.journals
+)
+
+export const getIsJournalsLoaded = createSelector(
+    [getJournals],
+    journals => !!journals.length
+)

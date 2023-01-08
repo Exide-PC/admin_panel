@@ -139,13 +139,38 @@ def run_api_server(container: Container):
             maintenance_commands = maintenance.get_commands()
 
             return jsonify(list(map(
-                lambda c: { 'id': c.id, 'name': c.name, 'group': c.group }, maintenance_commands
+                lambda c: {
+                    'id': c.id,
+                    'name': c.name,
+                    'group': c.group
+                },
+                maintenance_commands
             )))
         else:
             command_id = request.json['command_id']
             maintenance.execute(command_id)
 
             return ('', HTTPStatus.NO_CONTENT)
+
+    @app.route('/api/maintenance/journal', methods=['GET'])
+    @token_auth()
+    def journal():
+        journals = container.journal_service().list()
+
+        return jsonify(list(map(
+            lambda c: {
+                'id': c.id,
+                'unit': c.unit,
+                'name': c.name
+            },
+            journals
+        )))
+
+    @app.route('/api/maintenance/journal/<id>', methods=['GET'])
+    # @token_auth()
+    def journal_logs(id: str):
+        logs = container.journal_service().logs(id)
+        return jsonify(logs)
 
     print(f'Starting Admin Console API at {env.listener}')
 

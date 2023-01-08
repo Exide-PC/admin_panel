@@ -49,6 +49,9 @@ const Layout = ({ children }: Props) => {
                             <Button onClick={() => navigate('/maintenance')} size='sm' color="primary" outline>
                                 Maintenance
                             </Button>
+                            <Button onClick={() => navigate('/logs')} size='sm' color="primary" outline>
+                                Logs
+                            </Button>
                             <Button onClick={() => navigate('/nzxt-color')} size='sm' color="primary" outline>
                                 Nzxt
                             </Button>

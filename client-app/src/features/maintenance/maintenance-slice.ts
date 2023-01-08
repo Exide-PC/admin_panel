@@ -6,12 +6,20 @@ export interface MaintenanceCommand {
     group: string;
 }
 
+export interface Journal {
+    id: string;
+    unit: string;
+    name: string;
+}
+
 export interface MaintenanceState {
     commands: MaintenanceCommand[];
+    journals: Journal[];
 }
 
 const initialState: MaintenanceState = {
     commands: [],
+    journals: [],
 };
 
 export const appSlice = createSlice({
@@ -21,8 +29,11 @@ export const appSlice = createSlice({
         receiveMaintenanceCommands: (state, action: PayloadAction<MaintenanceCommand[]>) => {
             state.commands = action.payload;
         },
+        receiveJournals: (state, action: PayloadAction<Journal[]>) => {
+            state.journals = action.payload;
+        },
     },
 });
 
 export default appSlice.reducer;
-export const { receiveMaintenanceCommands } = appSlice.actions;
+export const { receiveMaintenanceCommands, receiveJournals } = appSlice.actions;

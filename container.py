@@ -5,6 +5,7 @@ from repository.appsettings_repository import AppSettingsRepository
 from repository.db import init_db
 from repository.nzxt_config_repository import NzxtConfigRepository
 from services.appsettings_service import AppSettingsService
+from services.journal_service import JournalService
 from services.maintenance_service import MaintenanceService
 from services.notification_service import NotificationService
 from services.nzxt_config_service import NzxtConfigService
@@ -67,4 +68,9 @@ class Container(containers.DeclarativeContainer):
         controller=nzxt_controller,
         status_service=nzxt_status_service,
         notification_service=notification_service
+    )
+
+    journal_service = providers.Singleton(
+        JournalService,
+        env=env
     )
