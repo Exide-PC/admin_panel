@@ -25,6 +25,6 @@ class NzxtController:
         if (speed < 20 or speed > 100):
             raise Exception(f'Invalid fan speed: {speed}')
 
-        self.prev_color = speed
+        self.prev_speed = speed
 
         os.system(f"sudo liquidctl set sync speed {speed}")
