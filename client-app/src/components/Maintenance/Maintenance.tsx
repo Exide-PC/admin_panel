@@ -2,7 +2,7 @@ import _ from "lodash";
 import * as React from "react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { Button, FormGroup, Row } from "reactstrap";
+import { Button, FormGroup, InputGroup, Row } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { maintenanceActions } from "../../features/maintenance/maintenance-logic";
 import { getMaintenanceCommands } from "../../features/maintenance/maintenance-selectors";
@@ -37,11 +37,14 @@ const Maintenance = () => {
             {Object.keys(groups).map(group => (
                 <FormGroup key={group}>
                     <big>{group}</big>
-                    {groups[group].map((c, i) => (
-                        <Button block key={i} onClick={() => maintenance(c)}>
-                            {c.name}
-                        </Button>
-                    ))}
+                    <br/>
+                    <InputGroup>
+                        {groups[group].map((c, i) => (
+                            <Button key={i} onClick={() => maintenance(c)} outline>
+                                {c.name}
+                            </Button>
+                        ))}
+                    </InputGroup>
                 </FormGroup>
             ))}
         </Row>
