@@ -13,6 +13,6 @@ export async function fetchJournals(): Promise<Journal[]> {
     return await _fetch<Journal[]>(`api/maintenance/journal`, 'GET');
 }
 
-export async function fetchJournalLogs(id: string): Promise<string[]> {
-    return await _fetch<string[]>(`api/maintenance/journal/${id}`, 'GET');
+export async function fetchJournalLogs(id: string, count: number): Promise<string[]> {
+    return await _fetch<string[]>(`api/maintenance/journal/${id}?count=${count}`, 'GET');
 }

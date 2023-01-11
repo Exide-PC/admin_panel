@@ -1,6 +1,7 @@
 import * as React from "react";
-import { useState } from "react";
-import { DropdownItem, DropdownMenu, DropdownToggle, FormGroup, UncontrolledDropdown } from "reactstrap";
+import { useRef, useState } from "react";
+import _ from "lodash";
+import { DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, InputGroup, UncontrolledDropdown } from "reactstrap";
 import { fetchJournalLogs } from "../../features/maintenance/maintenance-api";
 import { useJournals } from "../../features/maintenance/maintenance-logic";
 import { Journal } from "../../features/maintenance/maintenance-slice";
@@ -8,38 +9,65 @@ import { Journal } from "../../features/maintenance/maintenance-slice";
 interface Props {
 }
 
+const useDebounce = () => {
+    const debounceRef = useRef<_.DebouncedFunc<() => Promise<void>>>();
+
+    return (fun: () => Promise<void>) => {
+        debounceRef.current?.cancel(); // resetting previous if any
+
+        debounceRef.current = _.debounce(fun, 300);
+        debounceRef.current();
+    }
+}
+
 const Logs = ({  }: Props) => {
 
     const [selectedJournal, setSelectedJournal] = useState<Journal | null>(null);
     const [logs, setLogs] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [count, setCount] = useState<number>(50);
     
     const [journals] = useJournals();
 
-    const handleJournal = async (j: Journal) => {
-        setSelectedJournal(j);
-        setLoading(true);
+    const debounce = useDebounce();
 
-        const result = await fetchJournalLogs(j.id);
-        setLogs(result);
-        setLoading(false);
+    const handleChange = (j: Journal | null, c: number) => {
+        setSelectedJournal(j);
+        setCount(c);
+
+        if (!j) return;
+
+        debounce(async () => {
+            setLoading(true);
+            const result = await fetchJournalLogs(j.id, c);
+            setLogs(result);
+            setLoading(false);
+        })
     }
     
     return (
         <FormGroup>
             <FormGroup>
-                <UncontrolledDropdown>
-                    <DropdownToggle caret disabled={loading}>
-                        {selectedJournal?.name ?? '<Select>'}
-                    </DropdownToggle>
-                    <DropdownMenu dark>
-                        {journals.map(j => (
-                            <DropdownItem key={j.id} onClick={() => handleJournal(j)}>
-                                {j.name}
-                            </DropdownItem>
-                        ))}
-                    </DropdownMenu>
-                </UncontrolledDropdown>
+                <InputGroup>
+                    <UncontrolledDropdown>
+                        <DropdownToggle caret disabled={loading}>
+                            {selectedJournal?.name ?? '<Select>'}
+                        </DropdownToggle>
+                        <DropdownMenu dark>
+                            {journals.map(j => (
+                                <DropdownItem key={j.id} onClick={() => handleChange(j, count)}>
+                                    {j.name}
+                                </DropdownItem>
+                            ))}
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
+                    <Input
+                        style={{ maxWidth: 80, minWidth: 80 }}
+                        type='number'
+                        value={count}
+                        onChange={e => handleChange(selectedJournal, e.target.valueAsNumber)}
+                    />
+                </InputGroup>
             </FormGroup>
             <FormGroup>
                 {logs.map((l, i) => (

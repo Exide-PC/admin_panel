@@ -169,7 +169,8 @@ def run_api_server(container: Container):
     @app.route('/api/maintenance/journal/<id>', methods=['GET'])
     @token_auth()
     def journal_logs(id: str):
-        logs = container.journal_service().logs(id)
+        count = request.args.get("count", type=int)
+        logs = container.journal_service().logs(id, count)
         return jsonify(logs)
 
     print(f'Starting Admin Console API at {env.listener}')
