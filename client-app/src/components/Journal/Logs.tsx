@@ -73,12 +73,41 @@ const Logs = ({  }: Props) => {
             <FormGroup>
                 {logs.map((l, i) => (
                     <React.Fragment key={i}>
-                        {l}<br/>
+                        <LogRow text={l}/>
+                        <br/>
                     </React.Fragment>
                 ))}
             </FormGroup>
         </FormGroup>
     )
+}
+
+const LogRow = ({ text}: { text: string }) => {
+    return (
+        <span style={{ color: getColor(text) }}>
+            {text}
+        </span>
+    )
+}
+
+const entryColors: Record<string, string[]> = {
+    red: ['exception', 'error'],
+    orange: ['warning'],
+    yellow: ['start', 'stop']
+}
+
+const getColor = (text: string): string | undefined => {
+    const textLower = text.toLowerCase();
+
+    for (const color in entryColors) {
+        for (const entry of entryColors[color]) {
+            if (textLower.includes(entry)) {
+                return color;
+            }
+        }
+    }
+
+    return undefined;
 }
 
 export default Logs;
