@@ -62,10 +62,11 @@ const Logs = ({  }: Props) => {
                         </DropdownMenu>
                     </UncontrolledDropdown>
                     <Input
-                        style={{ maxWidth: 80, minWidth: 80 }}
+                        style={{ maxWidth: 110, minWidth: 110 }}
                         type='number'
                         value={count}
                         onChange={e => handleChange(selectedJournal, e.target.valueAsNumber)}
+                        placeholder='Count'
                     />
                 </InputGroup>
             </FormGroup>
