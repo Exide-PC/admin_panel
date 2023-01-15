@@ -32,7 +32,7 @@ class NzxtWorker:
             
             status = self._status_service.get_status()
 
-            if (status.cpu_temperature > 40):
+            if (status.cpu_temperature > 60):
                 self._notification_service.send(f'CPU temperature: <b>{status.cpu_temperature}°C</b>')
 
         except Exception as e:
