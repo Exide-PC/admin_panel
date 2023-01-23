@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { _API_ } from "./consts";
 
 const _fetch = async <T>(uri: string, method: RequestInit['method'], json?: any): Promise<T> => {
@@ -19,6 +20,7 @@ const _fetch = async <T>(uri: string, method: RequestInit['method'], json?: any)
 
     if (!response.ok) {
         const error = await response.text();
+        toast.error(error);
         throw new Error(error)
     }
 

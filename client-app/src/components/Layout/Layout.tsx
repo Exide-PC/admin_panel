@@ -55,6 +55,9 @@ const Layout = ({ children }: Props) => {
                             <Button onClick={() => navigate('/nzxt-color')} color="primary" outline>
                                 Nzxt
                             </Button>
+                            <Button onClick={() => navigate('/notes')} color="primary" outline>
+                                Notes
+                            </Button>
                         </InputGroup>
                     </FormGroup>
                     <Toaster position="bottom-left"/>

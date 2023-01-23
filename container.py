@@ -3,10 +3,12 @@ from env import Environment
 from repository.appsettings_repository import AppSettingsRepository
 
 from repository.db import init_db
+from repository.note_repository import NoteRepository
 from repository.nzxt_config_repository import NzxtConfigRepository
 from services.appsettings_service import AppSettingsService
 from services.journal_service import JournalService
 from services.maintenance_service import MaintenanceService
+from services.note_service import NoteService
 from services.notification_service import NotificationService
 from services.nzxt_config_service import NzxtConfigService
 from services.nzxt_controller import NzxtController
@@ -73,4 +75,15 @@ class Container(containers.DeclarativeContainer):
     journal_service = providers.Singleton(
         JournalService,
         env=env
+    )
+
+    note_repo = providers.Factory(
+        NoteRepository,
+        con=database_client
+    )
+
+    note_service = providers.Factory(
+        NoteService,
+        env=env,
+        repo=note_repo
     )

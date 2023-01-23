@@ -4,6 +4,7 @@ import functools
 from http import HTTPStatus
 from threading import Thread
 from typing import Any
+from datetime import datetime
 import urllib
 
 from flask import Flask, request, jsonify
@@ -12,6 +13,7 @@ from flask_cors import CORS
 from container import Container
 from env import env
 from repository.nzxt_config_repository import NzxtConfig
+from services.note_service import Note
 
 
 def run_api_server(container: Container):
@@ -45,7 +47,11 @@ def run_api_server(container: Container):
                 if (not token_ok):
                     return ('Invalid token was provided', HTTPStatus.UNAUTHORIZED)
 
-                return f(*args, **kwargs)
+                try:
+                    return f(*args, **kwargs)
+                except Exception as e:
+                    return (str(e), HTTPStatus.INTERNAL_SERVER_ERROR)
+
             return decorator
         return demo_mode_auth_decorator
 
@@ -172,6 +178,46 @@ def run_api_server(container: Container):
         count = request.args.get("count", type=int)
         logs = container.journal_service().logs(id, count)
         return jsonify(logs)
+    
+    @app.route('/api/note', methods=['GET', 'POST', 'PUT'])
+    @token_auth()
+    def note():
+        password = request.args['password']        
+        note_service = container.note_service()
+
+        if (request.method == 'GET'):
+            notes = note_service.list(password)
+
+            return jsonify(list(map(
+                lambda n: {
+                    'id': n.id,
+                    'text': n.text,
+                    'timestamp': n.timestamp
+                },
+                notes
+            )))
+
+        elif (request.method == 'POST'):
+            note = Note(
+                id=request.json['id'],
+                text=request.json['text'],
+                timestamp=request.json['timestamp']
+            )
+
+            note_service.add(note, password)
+
+            return ('', HTTPStatus.NO_CONTENT)
+
+        elif (request.method == 'PUT'):
+            note = Note(
+                id=request.json['id'],
+                text=request.json['text'],
+                timestamp=request.json['timestamp']
+            )
+
+            note_service.update(note, password)
+
+            return ('', HTTPStatus.NO_CONTENT)
 
     print(f'Starting Admin Console API at {env.listener}')
 
