@@ -36,11 +36,14 @@ const Notes = ({  }: Props) => {
         if (!note.text) return;
 
         if (note.id) {
-            await dispatch(noteActions.updateNote(note))
+            await dispatch(noteActions.updateNote(note));
+            setNote(prev => ({ ...prev, id: '' }));
         }
         else {
-            await dispatch(noteActions.addNote({ ...note, id: uuid4() }))
+            await dispatch(noteActions.addNote({ ...note, id: uuid4() }));
         }
+
+        setNote(prev => ({ ...prev, text: '' }));
     }
 
     return (<>
@@ -59,7 +62,7 @@ const Notes = ({  }: Props) => {
         <br/>
         <Input
             type='date'
-            value={formatDate(new Date(note.timestamp))}
+            value={moment(note.timestamp).format('yyyy-MM-DD')}
             onChange={e => e.target.valueAsDate && setNote({ ...note, timestamp: e.target.valueAsDate.valueOf() })}
             disabled={!approvedPassword}
         />
@@ -70,6 +73,11 @@ const Notes = ({  }: Props) => {
                 onChange={e => setNote({ ...note, text: e.target.value })}
                 disabled={!approvedPassword}
             />
+            {note.id &&
+                <Button outline onClick={() => setNote({ ...note, text: '', id: '' })} disabled={!approvedPassword}>
+                    Cancel
+                </Button>
+            }
             <Button onClick={handleSubmit} disabled={!approvedPassword} color={note.id ? 'warning' : 'secondary'}>
                 {note.id ? 'Update' : 'Add'}
             </Button>
@@ -77,19 +85,11 @@ const Notes = ({  }: Props) => {
         <hr/>
         {notes.map(n => 
             <div key={n.id} onClick={() => setNote(n)} style={{ cursor: 'pointer' }}>
-                {moment(n.timestamp).toLocaleString()} {n.text}<br/>
+                <small>{moment(n.timestamp).format('MM/DD/yyyy')}:</small> {n.text}<br/> {/* https://momentjscom.readthedocs.io/en/latest/moment/04-displaying/01-format/ */}
             </div>
         )}
     </>
     )
-}
-
-const formatDate = (d: Date) => {
-    const year = d.getFullYear();
-    const month = d.getMonth();
-    const date = d.getDate();
-
-    return `${year}-${(month + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`
 }
 
 export default Notes;
