@@ -70,8 +70,8 @@ const Notes = ({  }: Props) => {
                 onChange={e => setNote({ ...note, text: e.target.value })}
                 disabled={!approvedPassword}
             />
-            <Button onClick={handleSubmit} disabled={!approvedPassword}>
-                Submit
+            <Button onClick={handleSubmit} disabled={!approvedPassword} color={note.id ? 'warning' : 'secondary'}>
+                {note.id ? 'Update' : 'Add'}
             </Button>
         </InputGroup>
         <hr/>
