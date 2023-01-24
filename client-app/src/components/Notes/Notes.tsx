@@ -85,7 +85,9 @@ const Notes = ({  }: Props) => {
         <hr/>
         {notes.map(n => 
             <div key={n.id} onClick={() => setNote(n)} style={{ cursor: 'pointer' }}>
-                <small>{moment(n.timestamp).format('MM/DD/yyyy')}:</small> {n.text}<br/> {/* https://momentjscom.readthedocs.io/en/latest/moment/04-displaying/01-format/ */}
+                <span style={{ color: n.id === note.id ? 'orange' : undefined }}>
+                    <small>{moment(n.timestamp).format('MM/DD/yyyy')}:</small> {n.text}<br/> {/* https://momentjscom.readthedocs.io/en/latest/moment/04-displaying/01-format/ */}
+                </span>
             </div>
         )}
     </>
