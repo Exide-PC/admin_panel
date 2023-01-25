@@ -15,9 +15,7 @@ class NoteService:
 
         return notes
 
-    def add(self, note: Note, password: str):
-        self.__authorize(password)
-
+    def add(self, note: Note):
         self._repo.add(note)
 
     def update(self, note: Note, password: str):

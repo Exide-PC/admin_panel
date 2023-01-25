@@ -10,8 +10,7 @@ export const noteActions = {
         dispatch(receivePassword(password));
     },
     addNote: (note: Note): AppThunk => async (dispatch, getState) => {
-        const password = getApprovedPassword(getState());
-        await fetchCreateNote(note, password);
+        await fetchCreateNote(note);
         dispatch(receiveNote(note));
     },
     updateNote: (note: Note): AppThunk => async (dispatch, getState) => {

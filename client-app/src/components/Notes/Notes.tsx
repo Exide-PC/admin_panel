@@ -64,21 +64,19 @@ const Notes = ({  }: Props) => {
             type='date'
             value={moment(note.timestamp).format('yyyy-MM-DD')}
             onChange={e => e.target.valueAsDate && setNote({ ...note, timestamp: e.target.valueAsDate.valueOf() })}
-            disabled={!approvedPassword}
         />
         <InputGroup>
             <Input
                 type='textarea'
                 value={note.text}
                 onChange={e => setNote({ ...note, text: e.target.value })}
-                disabled={!approvedPassword}
             />
             {note.id &&
                 <Button outline onClick={() => setNote({ ...note, text: '', id: '' })} disabled={!approvedPassword}>
                     Cancel
                 </Button>
             }
-            <Button onClick={handleSubmit} disabled={!approvedPassword} color={note.id ? 'warning' : 'secondary'}>
+            <Button onClick={handleSubmit} color={note.id ? 'warning' : 'secondary'}>
                 {note.id ? 'Update' : 'Add'}
             </Button>
         </InputGroup>

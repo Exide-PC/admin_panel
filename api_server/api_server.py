@@ -182,10 +182,10 @@ def run_api_server(container: Container):
     @app.route('/api/note', methods=['GET', 'POST', 'PUT'])
     @token_auth()
     def note():
-        password = request.args['password']        
         note_service = container.note_service()
 
         if (request.method == 'GET'):
+            password = request.args['password']
             notes = note_service.list(password)
 
             return jsonify(list(map(
@@ -204,7 +204,7 @@ def run_api_server(container: Container):
                 timestamp=request.json['timestamp']
             )
 
-            note_service.add(note, password)
+            note_service.add(note)
 
             return ('', HTTPStatus.NO_CONTENT)
 
@@ -215,6 +215,7 @@ def run_api_server(container: Container):
                 timestamp=request.json['timestamp']
             )
 
+            password = request.args['password']
             note_service.update(note, password)
 
             return ('', HTTPStatus.NO_CONTENT)
