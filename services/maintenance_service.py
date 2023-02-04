@@ -19,6 +19,7 @@ class MaintenanceService:
         MaintenanceCommand('80df3b9b-b099-4eb3-bd41-ddb63751319e', 'Restart Discord Bot', 'Bot Exide', 'sudo service discord_bot restart'),
         MaintenanceCommand('de20b147-ff58-4fa6-84bb-c34326cff776', 'Restart Telegram Bot', 'Bot Exide', 'sudo service telegram_bot restart'),
         MaintenanceCommand('b84322e9-b3eb-4446-86cf-352cb49300b0', 'Restart VK Bot', 'Bot Exide', 'sudo service vk_bot restart'),
+        MaintenanceCommand('02de98e4-2dcd-460c-9ad3-e938ac3d5ce2', 'Restart ChatGPT API', 'Bot Exide', 'sudo service bot_exide_chatgpt restart'),
         MaintenanceCommand('5c535f32-925a-49cb-a099-3d4925f0d290', 'Restart currency notifier', 'Bot Exide', 'sudo service dollar_notifier restart'),
     ]
     

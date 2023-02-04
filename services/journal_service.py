@@ -16,6 +16,7 @@ class JournalService:
         Journal('d73c92b6-ff16-41a7-b4ee-222b06f3f30f', 'discord_bot', 'BOT Exide [Discord]'),
         Journal('3d36183a-e31d-42c4-8216-039ff1a7f3a3', 'telegram_bot', 'BOT Exide [Telegram]'),
         Journal('9f8e0927-3d48-4416-94ac-b87b1fa3aae2', 'vk_bot', 'BOT Exide [VK]'),
+        Journal('6617542c-c320-4bbd-8c2f-08579ea663a5', 'bot_exide_chatgpt', 'BOT Exide [ChatGPT]'),
         Journal('29dadd8d-56b6-4544-b9f5-7c55b7abf6ca', 'admin_panel', 'Admin Panel API'),
         Journal('77d91bf1-8cdd-4856-9452-84addec36f14', 'minecraft-server', 'Minecraft Server'),
         Journal('1230d4e9-01da-45de-8b50-ac7227a2c3bf', 'configpro', 'ConfigMeta API'),
