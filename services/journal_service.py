@@ -41,5 +41,6 @@ class JournalService:
 
         result = subprocess.run(['journalctl', '-u', known_journal.unit, '-n', str(count)], stdout=subprocess.PIPE)
         logs = result.stdout.decode('utf-8').split('\n')
+        logs.reverse()
 
         return logs
