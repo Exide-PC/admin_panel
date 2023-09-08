@@ -91,17 +91,15 @@ const LogRow = ({ text}: { text: string }) => {
 }
 
 const entryColors: Record<string, string[]> = {
-    red: ['exception', 'error'],
-    orange: ['warning'],
-    yellow: ['start', 'stop']
+    red: ['ERROR'],
+    orange: ['WARNING'],
+    yellow: ['INFO']
 }
 
 const getColor = (text: string): string | undefined => {
-    const textLower = text.toLowerCase();
-
     for (const color in entryColors) {
         for (const entry of entryColors[color]) {
-            if (textLower.includes(entry)) {
+            if (text.includes(entry)) {
                 return color;
             }
         }
