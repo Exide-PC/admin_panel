@@ -92,7 +92,7 @@ const LogRow = ({ text}: { text: string }) => {
 
 const entryColors: Record<string, string[]> = {
     red: ['ERROR'],
-    coral: ['WARNING'],
+    orange: ['WARNING'],
     lightskyblue: ['INFO'],
     khaki: ['Started', 'Stopped'],
 }
