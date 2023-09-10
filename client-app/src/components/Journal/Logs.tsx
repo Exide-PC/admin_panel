@@ -27,7 +27,7 @@ const Logs = ({  }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [count, setCount] = useState<number>(50);
     const [output, setOutput] = useState<JournalOutput>('short');
-    const [descending, setDescending] = useState<boolean>(true);
+    const [ascending, setAscending] = useState<boolean>(true);
     
     const [journals] = useJournals();
 
@@ -49,11 +49,11 @@ const Logs = ({  }: Props) => {
     }
 
     const sortedLogs = useMemo(() => {
-        if (!descending)
+        if (ascending)
             return logs;
 
         return [...logs].reverse();
-    }, [logs, descending]);
+    }, [logs, ascending]);
     
     return (
         <FormGroup>
@@ -71,6 +71,13 @@ const Logs = ({  }: Props) => {
                             ))}
                         </DropdownMenu>
                     </UncontrolledDropdown>
+                    <Input
+                        style={{ maxWidth: 110, minWidth: 110 }}
+                        type='number'
+                        value={count}
+                        onChange={e => handleChange(selectedJournal, e.target.valueAsNumber, output)}
+                        placeholder='Count'
+                    />
                     <UncontrolledDropdown>
                         <DropdownToggle caret outline>
                             {output}
@@ -87,26 +94,20 @@ const Logs = ({  }: Props) => {
                             </DropdownItem>
                         </DropdownMenu>
                     </UncontrolledDropdown>
-                    <Input
-                        style={{ maxWidth: 110, minWidth: 110 }}
-                        type='number'
-                        value={count}
-                        onChange={e => handleChange(selectedJournal, e.target.valueAsNumber, output)}
-                        placeholder='Count'
-                    />
+                    <UncontrolledDropdown>
+                        <DropdownToggle caret outline>
+                            {ascending ? "asc" : "desc"}
+                        </DropdownToggle>
+                        <DropdownMenu dark>
+                            <DropdownItem onClick={() => setAscending(true)}>
+                                Ascending
+                            </DropdownItem>
+                            <DropdownItem onClick={() => setAscending(false)}>
+                                Descending
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
                 </InputGroup>
-            </FormGroup>
-            <FormGroup>
-                <FormGroup check>
-                    <Label check>
-                        Descending
-                    </Label>
-                    <Input
-                        type='checkbox'
-                        checked={descending}
-                        onChange={e => setDescending(e.target.checked)}
-                    />
-                </FormGroup>
             </FormGroup>
             <FormGroup style={{ whiteSpace: 'pre-wrap' }}>
                 {sortedLogs.map((l, i) => (
