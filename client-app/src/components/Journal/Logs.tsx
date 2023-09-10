@@ -27,7 +27,7 @@ const Logs = ({  }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [count, setCount] = useState<number>(50);
     const [output, setOutput] = useState<JournalOutput>('short');
-    const [ascending, setAscending] = useState<boolean>(true);
+    const [ascending, setAscending] = useState<boolean>(false);
     
     const [journals] = useJournals();
 
