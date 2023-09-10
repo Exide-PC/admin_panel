@@ -134,7 +134,8 @@ const entryColors: Record<string, string[]> = {
     orange: ['WARNING'],
     lightskyblue: ['INFO'],
     khaki: ['Started', 'Stopped'],
-    grey: ['During handling of the above exception, another exception occurred']
+    grey: ['During handling of the above exception, another exception occurred'],
+    lightslategrey: ['  File '],
 }
 
 const getColor = (text: string): string | undefined => {
