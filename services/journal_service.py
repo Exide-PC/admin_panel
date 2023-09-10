@@ -30,7 +30,7 @@ class JournalService:
     def list(self):
         return self.__journals
 
-    def logs(self, id: str, count: int) -> List[str]:
+    def logs(self, id: str, count: int, output: str) -> List[str]:
         if (self._env.is_windows):
             return ['Windows', 'dev', 'stub']
 
@@ -39,8 +39,7 @@ class JournalService:
         if (not known_journal):
             raise Exception(f'Unknown journal: {id}')
 
-        result = subprocess.run(['journalctl', '-u', known_journal.unit, '-n', str(count)], stdout=subprocess.PIPE)
+        result = subprocess.run(['journalctl', '-u', known_journal.unit, '-n', str(count), '-o', output], stdout=subprocess.PIPE)
         logs = result.stdout.decode('utf-8').split('\n')
-        logs.reverse()
 
         return logs

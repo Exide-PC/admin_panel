@@ -1,8 +1,8 @@
 import * as React from "react";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import _ from "lodash";
-import { DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, InputGroup, UncontrolledDropdown } from "reactstrap";
-import { fetchJournalLogs } from "../../features/maintenance/maintenance-api";
+import { DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, InputGroup, Label, UncontrolledDropdown } from "reactstrap";
+import { JournalOutput, fetchJournalLogs } from "../../features/maintenance/maintenance-api";
 import { useJournals } from "../../features/maintenance/maintenance-logic";
 import { Journal } from "../../features/maintenance/maintenance-slice";
 
@@ -26,24 +26,34 @@ const Logs = ({  }: Props) => {
     const [logs, setLogs] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [count, setCount] = useState<number>(50);
+    const [output, setOutput] = useState<JournalOutput>('short');
+    const [descending, setDescending] = useState<boolean>(true);
     
     const [journals] = useJournals();
 
     const debounce = useDebounce();
 
-    const handleChange = (j: Journal | null, c: number) => {
+    const handleChange = (j: Journal | null, c: number, o: JournalOutput) => {
         setSelectedJournal(j);
         setCount(c);
+        setOutput(o)
 
         if (!j) return;
 
         debounce(async () => {
             setLoading(true);
-            const result = await fetchJournalLogs(j.id, c);
+            const result = await fetchJournalLogs(j.id, c, o);
             setLogs(result);
             setLoading(false);
         })
     }
+
+    const sortedLogs = useMemo(() => {
+        if (!descending)
+            return logs;
+
+        return [...logs].reverse();
+    }, [logs, descending]);
     
     return (
         <FormGroup>
@@ -55,23 +65,51 @@ const Logs = ({  }: Props) => {
                         </DropdownToggle>
                         <DropdownMenu dark>
                             {journals.map(j => (
-                                <DropdownItem key={j.id} onClick={() => handleChange(j, count)}>
+                                <DropdownItem key={j.id} onClick={() => handleChange(j, count, output)}>
                                     {j.name}
                                 </DropdownItem>
                             ))}
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
+                    <UncontrolledDropdown>
+                        <DropdownToggle caret outline>
+                            {output}
+                        </DropdownToggle>
+                        <DropdownMenu dark>
+                            <DropdownItem onClick={() => handleChange(selectedJournal, count, 'short')}>
+                                short
+                            </DropdownItem>
+                            <DropdownItem onClick={() => handleChange(selectedJournal, count, 'short-precise')}>
+                                short-precise
+                            </DropdownItem>
+                            <DropdownItem onClick={() => handleChange(selectedJournal, count, 'cat')}>
+                                cat
+                            </DropdownItem>
                         </DropdownMenu>
                     </UncontrolledDropdown>
                     <Input
                         style={{ maxWidth: 110, minWidth: 110 }}
                         type='number'
                         value={count}
-                        onChange={e => handleChange(selectedJournal, e.target.valueAsNumber)}
+                        onChange={e => handleChange(selectedJournal, e.target.valueAsNumber, output)}
                         placeholder='Count'
                     />
                 </InputGroup>
             </FormGroup>
+            <FormGroup>
+                <FormGroup check>
+                    <Label check>
+                        Descending
+                    </Label>
+                    <Input
+                        type='checkbox'
+                        checked={descending}
+                        onChange={e => setDescending(e.target.checked)}
+                    />
+                </FormGroup>
+            </FormGroup>
             <FormGroup style={{ whiteSpace: 'pre-wrap' }}>
-                {logs.map((l, i) => (
+                {sortedLogs.map((l, i) => (
                     <React.Fragment key={i}>
                         <LogRow text={l}/>
                         <br/>

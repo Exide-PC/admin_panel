@@ -176,7 +176,8 @@ def run_api_server(container: Container):
     @token_auth()
     def journal_logs(id: str):
         count = request.args.get("count", type=int)
-        logs = container.journal_service().logs(id, count)
+        output = request.args.get("output", type=str)
+        logs = container.journal_service().logs(id, count, output)
         return jsonify(logs)
     
     @app.route('/api/note', methods=['GET', 'POST', 'PUT'])
