@@ -70,7 +70,7 @@ const Logs = ({  }: Props) => {
                     />
                 </InputGroup>
             </FormGroup>
-            <FormGroup>
+            <FormGroup style={{ whiteSpace: 'pre-wrap' }}>
                 {logs.map((l, i) => (
                     <React.Fragment key={i}>
                         <LogRow text={l}/>
