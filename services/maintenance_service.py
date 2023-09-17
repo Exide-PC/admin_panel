@@ -15,12 +15,11 @@ class MaintenanceService:
         MaintenanceCommand('5f9c7048-52bd-4c94-b189-b0240642a6b3', 'Re-deploy web', 'Admin panel', 'npm run build --prefix ~/repos/admin_panel/client-app && cp -r ~/repos/admin_panel/client-app/build/* /usr/share/nginx/www/admin.exideprod.com'),
         MaintenanceCommand('04f43395-33da-443f-a9e5-ce7e1afce94c', 'Git Pull', 'Bot Exide', 'git -C ~/repos/bot_exide pull'),
         MaintenanceCommand('036e8933-c4e4-4c1d-8d8e-1a085323bdbc', 'Restart hub', 'Bot Exide', 'sudo service bot_exide_hub restart'),
-        MaintenanceCommand('3b1b5f29-0c1a-4693-a3c8-7dab911979f0', 'Re-deploy web', 'Bot Exide', 'npm run build --prefix ~/repos/bot_exide/hub/client-app && cp -r ~/repos/bot_exide/hub/client-app/build/* /usr/share/nginx/www/bot.exideprod.com'),
+        MaintenanceCommand('3b1b5f29-0c1a-4693-a3c8-7dab911979f0', 'Re-deploy web', 'Bot Exide', 'npm run build --prefix ~/repos/bot_exide/hub/client-app && cp -r ~/repos/bot_exide/hub/client-app/build/* /usr/share/nginx/www/bot.exideprod.com/admin_panel'),
         MaintenanceCommand('80df3b9b-b099-4eb3-bd41-ddb63751319e', 'Restart Discord Bot', 'Bot Exide', 'sudo service discord_bot restart'),
         MaintenanceCommand('de20b147-ff58-4fa6-84bb-c34326cff776', 'Restart Telegram Bot', 'Bot Exide', 'sudo service telegram_bot restart'),
         MaintenanceCommand('b84322e9-b3eb-4446-86cf-352cb49300b0', 'Restart VK Bot', 'Bot Exide', 'sudo service vk_bot restart'),
-        MaintenanceCommand('02de98e4-2dcd-460c-9ad3-e938ac3d5ce2', 'Restart ChatGPT API', 'Bot Exide', 'sudo service bot_exide_chatgpt restart'),
-        MaintenanceCommand('5c535f32-925a-49cb-a099-3d4925f0d290', 'Restart currency notifier', 'Bot Exide', 'sudo service dollar_notifier restart'),
+        MaintenanceCommand('3b1b5f29-0c1a-4693-a3c8-7dab911979f0', 'Re-deploy Mini App', 'Bot Exide', 'npm run build --prefix ~/repos/bot_exide/telegram_bot/web-app && cp -r ~/repos/bot_exide/telegram_bot/web-app/build/* /usr/share/nginx/www/bot.exideprod.com/web-app'),
     ]
     
     def __init__(self) -> None:
