@@ -22,10 +22,10 @@ class MaintenanceService:
         MaintenanceCommand('b84322e9-b3eb-4446-86cf-352cb49300b0', 'Restart VK Bot', 'Bot Exide [Prod]', 'sudo service vk_bot restart'),
         MaintenanceCommand('3748f6cb-328a-4c61-a21f-967b73db72a3', 'Re-deploy Mini App', 'Bot Exide [Prod]', 'npm run build --prefix ~/repos/bot_exide/telegram_bot/web-app && cp -r ~/repos/bot_exide/telegram_bot/web-app/build/* /usr/share/nginx/www/bot.exideprod.com/mini-app-prod'),
 
-        MaintenanceCommand('04f43395-33da-443f-a9e5-ce7e1afce94c', 'Git Pull', 'Bot Exide [Staging]', 'git -C ~/repos/bot_exide_staging pull'),
-        MaintenanceCommand('036e8933-c4e4-4c1d-8d8e-1a085323bdbc', 'Restart hub', 'Bot Exide [Staging]', 'sudo service bot_exide_hub_staging restart'),
-        MaintenanceCommand('de20b147-ff58-4fa6-84bb-c34326cff776', 'Restart Telegram Bot', 'Bot Exide [Staging]', 'sudo service telegram_bot_staging restart'),
-        MaintenanceCommand('3748f6cb-328a-4c61-a21f-967b73db72a3', 'Re-deploy Mini App', 'Bot Exide [Staging]', 'npm run build --prefix ~/repos/bot_exide_staging/telegram_bot/web-app && cp -r ~/repos/bot_exide_staging/telegram_bot/web-app/build/* /usr/share/nginx/www/bot.exideprod.com/mini-app-staging'),
+        MaintenanceCommand('a5e852ae-a1fd-450f-b15f-6c59226dffc7', 'Git Pull', 'Bot Exide [Staging]', 'git -C ~/repos/bot_exide_staging pull'),
+        MaintenanceCommand('c4c4e8fc-3ba5-4da6-b56b-ede04a652be3', 'Restart hub', 'Bot Exide [Staging]', 'sudo service bot_exide_hub_staging restart'),
+        MaintenanceCommand('c2b580e2-ecbd-40d2-873a-da93f829d1bd', 'Restart Telegram Bot', 'Bot Exide [Staging]', 'sudo service telegram_bot_staging restart'),
+        MaintenanceCommand('a81755fa-f249-40be-aef9-a8d320db19fd', 'Re-deploy Mini App', 'Bot Exide [Staging]', 'npm run build --prefix ~/repos/bot_exide_staging/telegram_bot/web-app && cp -r ~/repos/bot_exide_staging/telegram_bot/web-app/build/* /usr/share/nginx/www/bot.exideprod.com/mini-app-staging'),
     ]
     
     def __init__(self) -> None:
