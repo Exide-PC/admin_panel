@@ -25,7 +25,7 @@ class MaintenanceService:
         MaintenanceCommand('a5e852ae-a1fd-450f-b15f-6c59226dffc7', 'Git Pull', 'Bot Exide [Staging]', 'git -C ~/repos/bot_exide_staging pull'),
         MaintenanceCommand('c4c4e8fc-3ba5-4da6-b56b-ede04a652be3', 'Restart hub', 'Bot Exide [Staging]', 'sudo service bot_exide_hub_staging restart'),
         MaintenanceCommand('c2b580e2-ecbd-40d2-873a-da93f829d1bd', 'Restart Telegram Bot', 'Bot Exide [Staging]', 'sudo service telegram_bot_staging restart'),
-        MaintenanceCommand('a81755fa-f249-40be-aef9-a8d320db19fd', 'Re-deploy Mini App', 'Bot Exide [Staging]', 'npm run build --prefix ~/repos/bot_exide_staging/telegram_bot/web-app && cp -r ~/repos/bot_exide_staging/telegram_bot/web-app/build/* /usr/share/nginx/www/bot.exideprod.com/mini-app-staging'),
+        MaintenanceCommand('a81755fa-f249-40be-aef9-a8d320db19fd', 'Re-deploy Mini App', 'Bot Exide [Staging]', 'npm run build:staging --prefix ~/repos/bot_exide_staging/telegram_bot/web-app && cp -r ~/repos/bot_exide_staging/telegram_bot/web-app/build/* /usr/share/nginx/www/bot.exideprod.com/mini-app-staging'),
     ]
     
     def __init__(self) -> None:
