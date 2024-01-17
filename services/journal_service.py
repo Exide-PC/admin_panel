@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import subprocess
 from typing import List
+from uuid import UUID, uuid4
 
 from env import Environment
 
@@ -17,11 +18,18 @@ class Journal:
         self.name = name
 
 @dataclass
+class DockerContainer:
+    id: str
+    name: str
+
+@dataclass
 class DockerCompose:
     id: str
     name: str
     compose_file: str
     env_file: str
+    containers: list[DockerContainer]
+
 
 class JournalService:
     __dockers = [
@@ -30,6 +38,10 @@ class JournalService:
             name='Bot Exide [Compose] | Staging',
             compose_file='/home/exide/repos/bot_exide_staging/compose.yaml',
             env_file='/home/exide/repos/bot_exide_staging/.env.docker.staging',
+            containers=[
+                DockerContainer(str(uuid4()), 'bot-exide-staging_hub'),
+                DockerContainer(str(uuid4()), 'bot-exide-staging_telegram-bot'),
+            ]
         ),
     ]
 
@@ -53,21 +65,28 @@ class JournalService:
     def list(self):
         result: list[Loggable] = []
 
-        result += (Loggable(id=d.id, name=d.name) for d in self.__dockers)
+        for compose in self.__dockers:
+            result.append(Loggable(id=compose.id, name=compose.name))
+
+            for c in compose.containers:
+                result.append(Loggable(id=str(c.id), name=c.name))
+        
         result += (Loggable(id=j.id, name=j.name) for j in self.__journals)
 
         return result
 
     def logs(self, id: str, count: int, output: str) -> List[str]:
-        known_docker = next((d for d in self.__dockers if d.id == id), None)
+        for compose in self.__dockers:
+            if (compose.id == id):
+                return self.__docker_compose_logs(compose, count)
 
-        if (known_docker):
-            return self.__docker_compose_logs(known_docker, count)
-        
-        known_journal = next((j for j in self.__journals if j.id == id), None)
+            for container in compose.containers:
+                if (container.id == id):
+                    return self.__docker_container_logs(container, count)
 
-        if (known_journal):
-            return self.__journal_logs(known_journal, count, output)
+        for journal in self.__journals:
+            if (journal.id == id):
+                return self.__journal_logs(journal, count, output)
 
         raise Exception(f'Unknown logger id: {id}')
 
@@ -76,6 +95,15 @@ class JournalService:
             return ['Windows', 'dev', 'stub']
 
         result = subprocess.run(['docker', 'compose', '-f', compose.compose_file, '--env-file', compose.env_file, 'logs', '-n', str(count)], stdout=subprocess.PIPE)
+        logs = result.stdout.decode('utf-8').split('\n')
+
+        return logs
+
+    def __docker_container_logs(self, container: DockerContainer, count: int) -> List[str]:
+        if (self._env.is_windows):
+            return ['Windows', 'dev', 'stub']
+
+        result = subprocess.run(['docker', 'logs', container.name, '-t', '-n', str(count)], stdout=subprocess.PIPE)
         logs = result.stdout.decode('utf-8').split('\n')
 
         return logs
