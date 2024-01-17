@@ -15,6 +15,7 @@ class MaintenanceService:
         MaintenanceCommand('5f9c7048-52bd-4c94-b189-b0240642a6b3', 'Re-deploy web', 'Admin panel', 'npm run build --prefix ~/repos/admin_panel/client-app && cp -r ~/repos/admin_panel/client-app/build/* /usr/share/nginx/www/admin.exideprod.com'),
         
         MaintenanceCommand('04f43395-33da-443f-a9e5-ce7e1afce94c', 'Git Pull', 'Bot Exide [Prod]', 'git -C ~/repos/bot_exide pull'),
+        MaintenanceCommand('8a23210f-0f25-4d5b-b6b1-daeffbbf8e49', 'Compose build', 'Bot Exide [Prod]', 'docker compose -f /home/exide/repos/bot_exide/compose.yaml --env-file /home/exide/repos/bot_exide/.env.docker.prod up --build -d'),
         MaintenanceCommand('036e8933-c4e4-4c1d-8d8e-1a085323bdbc', 'Restart hub', 'Bot Exide [Prod]', 'sudo service bot_exide_hub restart'),
         MaintenanceCommand('3b1b5f29-0c1a-4693-a3c8-7dab911979f0', 'Re-deploy web', 'Bot Exide [Prod]', 'npm run build --prefix ~/repos/bot_exide/hub/client-app && cp -r ~/repos/bot_exide/hub/client-app/build/* /usr/share/nginx/www/bot.exideprod.com/admin_panel'),
         MaintenanceCommand('80df3b9b-b099-4eb3-bd41-ddb63751319e', 'Restart Discord Bot', 'Bot Exide [Prod]', 'sudo service discord_bot restart'),
