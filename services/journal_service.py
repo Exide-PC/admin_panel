@@ -65,8 +65,6 @@ class JournalService:
         Journal('1230d4e9-01da-45de-8b50-ac7227a2c3bf', 'configpro', 'ConfigMeta API'),
         Journal('bb90bc3b-0e11-4018-91c0-890b5ead5fbc', 'dollar_notifier', 'Dollar Notifier'),
         Journal('7bbf1c62-2023-483d-a2bc-482e89328457', 'rlt_server', 'RLT API'),
-        Journal('f48c8f84-b4a2-4ae3-bc0c-7459e08eabca', 'bot_exide_hub_staging', 'BOT Exide [Hub] | Staging'),
-        Journal('1bc6539e-7d82-436a-8778-89b7b7d70606', 'telegram_bot_staging', 'BOT Exide [Telegram] | Staging'),
     ]
 
     def __init__(self, env: Environment) -> None:
