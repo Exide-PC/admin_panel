@@ -105,7 +105,7 @@ class JournalService:
         if (self._env.is_windows):
             return ['Windows', 'dev', 'stub']
 
-        result = subprocess.run(['docker', 'compose', '-f', compose.compose_file, '--env-file', compose.env_file, 'logs', '-n', str(count)], stdout=subprocess.PIPE)
+        result = subprocess.run(['docker', 'compose', '-f', compose.compose_file, '--env-file', compose.env_file, 'logs', '-t', '-n', str(count)], stdout=subprocess.PIPE)
         logs = result.stdout.decode('utf-8').split('\n')
 
         return logs
