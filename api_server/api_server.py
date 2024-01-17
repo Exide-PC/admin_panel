@@ -166,7 +166,6 @@ def run_api_server(container: Container):
         return jsonify(list(map(
             lambda c: {
                 'id': c.id,
-                'unit': c.unit,
                 'name': c.name
             },
             journals

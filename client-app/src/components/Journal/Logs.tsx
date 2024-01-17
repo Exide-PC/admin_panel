@@ -4,7 +4,7 @@ import _ from "lodash";
 import { DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, InputGroup, Label, UncontrolledDropdown } from "reactstrap";
 import { JournalOutput, fetchJournalLogs } from "../../features/maintenance/maintenance-api";
 import { useJournals } from "../../features/maintenance/maintenance-logic";
-import { Journal } from "../../features/maintenance/maintenance-slice";
+import { Loggable } from "../../features/maintenance/maintenance-slice";
 
 interface Props {
 }
@@ -22,7 +22,7 @@ const useDebounce = () => {
 
 const Logs = ({  }: Props) => {
 
-    const [selectedJournal, setSelectedJournal] = useState<Journal | null>(null);
+    const [selectedJournal, setSelectedJournal] = useState<Loggable | null>(null);
     const [logs, setLogs] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [count, setCount] = useState<number>(50);
@@ -33,7 +33,7 @@ const Logs = ({  }: Props) => {
 
     const debounce = useDebounce();
 
-    const handleChange = (j: Journal | null, c: number, o: JournalOutput) => {
+    const handleChange = (j: Loggable | null, c: number, o: JournalOutput) => {
         setSelectedJournal(j);
         setCount(c);
         setOutput(o)

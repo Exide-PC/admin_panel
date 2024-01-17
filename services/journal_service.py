@@ -1,8 +1,14 @@
+from dataclasses import dataclass
 import subprocess
 from typing import List
 
 from env import Environment
 
+
+@dataclass
+class Loggable:
+    id: str
+    name: str
 
 class Journal:
     def __init__(self, id: str, unit: str, name: str) -> None:
@@ -10,7 +16,23 @@ class Journal:
         self.unit = unit
         self.name = name
 
+@dataclass
+class DockerCompose:
+    id: str
+    name: str
+    compose_file: str
+    env_file: str
+
 class JournalService:
+    __dockers = [
+        DockerCompose(
+            id='816c6de1-161b-4546-b4f8-e69d4d17dc7d',
+            name='Bot Exide [Compose] | Staging',
+            compose_file='/home/exide/repos/bot_exide_staging/compose.yaml',
+            env_file='/home/exide/repos/bot_exide_staging/.env.docker.staging',
+        ),
+    ]
+
     __journals = [
         Journal('f8c0c569-c4c8-4b00-b07b-5ef186c1c132', 'bot_exide_hub', 'Bot Exide [Hub] | Prod'),
         Journal('d73c92b6-ff16-41a7-b4ee-222b06f3f30f', 'discord_bot', 'BOT Exide [Discord] | Prod'),
@@ -29,18 +51,40 @@ class JournalService:
         self._env = env
 
     def list(self):
-        return self.__journals
+        result: list[Loggable] = []
+
+        result += (Loggable(id=d.id, name=d.name) for d in self.__dockers)
+        result += (Loggable(id=j.id, name=j.name) for j in self.__journals)
+
+        return result
 
     def logs(self, id: str, count: int, output: str) -> List[str]:
+        known_docker = next((d for d in self.__dockers if d.id == id), None)
+
+        if (known_docker):
+            return self.__docker_compose_logs(known_docker, count)
+        
+        known_journal = next((j for j in self.__journals if j.id == id), None)
+
+        if (known_journal):
+            return self.__journal_logs(known_journal, count, output)
+
+        raise Exception(f'Unknown logger id: {id}')
+
+    def __docker_compose_logs(self, compose: DockerCompose, count: int) -> List[str]:
         if (self._env.is_windows):
             return ['Windows', 'dev', 'stub']
 
-        known_journal = next(j for j in self.__journals if j.id == id)
+        result = subprocess.run(['docker', 'compose', '-f', compose.compose_file, '--env-file', compose.env_file, 'logs', '-n', str(count)], stdout=subprocess.PIPE)
+        logs = result.stdout.decode('utf-8').split('\n')
 
-        if (not known_journal):
-            raise Exception(f'Unknown journal: {id}')
+        return logs
 
-        result = subprocess.run(['journalctl', '-u', known_journal.unit, '-n', str(count), '-o', output], stdout=subprocess.PIPE)
+    def __journal_logs(self, journal: Journal, count: int, output: str) -> List[str]:
+        if (self._env.is_windows):
+            return ['Windows', 'dev', 'stub']
+
+        result = subprocess.run(['journalctl', '-u', journal.unit, '-n', str(count), '-o', output], stdout=subprocess.PIPE)
         logs = result.stdout.decode('utf-8').split('\n')
 
         return logs

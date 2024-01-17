@@ -6,15 +6,14 @@ export interface MaintenanceCommand {
     group: string;
 }
 
-export interface Journal {
+export interface Loggable {
     id: string;
-    unit: string;
     name: string;
 }
 
 export interface MaintenanceState {
     commands: MaintenanceCommand[];
-    journals: Journal[];
+    journals: Loggable[];
 }
 
 const initialState: MaintenanceState = {
@@ -29,7 +28,7 @@ export const appSlice = createSlice({
         receiveMaintenanceCommands: (state, action: PayloadAction<MaintenanceCommand[]>) => {
             state.commands = action.payload;
         },
-        receiveJournals: (state, action: PayloadAction<Journal[]>) => {
+        receiveJournals: (state, action: PayloadAction<Loggable[]>) => {
             state.journals = action.payload;
         },
     },

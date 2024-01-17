@@ -1,5 +1,5 @@
 import _fetch from "../../_fetch";
-import { Journal, MaintenanceCommand } from "./maintenance-slice";
+import { Loggable, MaintenanceCommand } from "./maintenance-slice";
 
 export async function fetchMaintenanceCommands(): Promise<MaintenanceCommand[]> {
     return await _fetch<MaintenanceCommand[]>(`api/maintenance`, 'GET');
@@ -9,8 +9,8 @@ export async function fetchExecuteMaintenanceCommand(commandId: string): Promise
     await _fetch(`api/maintenance`, 'POST', { command_id: commandId });
 }
 
-export async function fetchJournals(): Promise<Journal[]> {
-    return await _fetch<Journal[]>(`api/maintenance/journal`, 'GET');
+export async function fetchJournals(): Promise<Loggable[]> {
+    return await _fetch<Loggable[]>(`api/maintenance/journal`, 'GET');
 }
 
 export type JournalOutput = 'short' | 'short-precise' | 'cat';
