@@ -34,19 +34,29 @@ class DockerCompose:
 class JournalService:
     __dockers = [
         DockerCompose(
+            id='13ceb764-46cc-435e-a4f9-5bc830f0958e',
+            name='BOT Exide [Compose] | Prod',
+            compose_file='/home/exide/repos/bot_exide/compose.yaml',
+            env_file='/home/exide/repos/bot_exide/.env.docker.prod',
+            containers=[
+                DockerContainer('fbdd5548-f22b-457b-9216-f41a480e7745', 'bot-exide-prod_hub', 'BOT Exide [Hub] | Prod'),
+                DockerContainer('58de9573-1a85-4dbb-b530-89d2eac0101c', 'bot-exide-prod_telegram-bot', 'BOT Exide [Telegram] | Prod'),
+            ],
+        ),
+        DockerCompose(
             id='816c6de1-161b-4546-b4f8-e69d4d17dc7d',
-            name='Bot Exide [Compose] | Staging',
+            name='BOT Exide [Compose] | Staging',
             compose_file='/home/exide/repos/bot_exide_staging/compose.yaml',
             env_file='/home/exide/repos/bot_exide_staging/.env.docker.staging',
             containers=[
                 DockerContainer('b573503f-7de9-4092-8eb1-1c0a41fb9138', 'bot-exide-staging_hub', 'BOT Exide [Hub] | Staging'),
                 DockerContainer('98efe8fe-3c8f-4958-b47e-aefc83a841e5', 'bot-exide-staging_telegram-bot', 'BOT Exide [Telegram] | Staging'),
-            ]
+            ],
         ),
     ]
 
     __journals = [
-        Journal('f8c0c569-c4c8-4b00-b07b-5ef186c1c132', 'bot_exide_hub', 'Bot Exide [Hub] | Prod'),
+        Journal('f8c0c569-c4c8-4b00-b07b-5ef186c1c132', 'bot_exide_hub', 'BOT Exide [Hub] | Prod'),
         Journal('d73c92b6-ff16-41a7-b4ee-222b06f3f30f', 'discord_bot', 'BOT Exide [Discord] | Prod'),
         Journal('3d36183a-e31d-42c4-8216-039ff1a7f3a3', 'telegram_bot', 'BOT Exide [Telegram] | Prod'),
         Journal('9f8e0927-3d48-4416-94ac-b87b1fa3aae2', 'vk_bot', 'BOT Exide [VK] | Prod'),
@@ -55,7 +65,7 @@ class JournalService:
         Journal('1230d4e9-01da-45de-8b50-ac7227a2c3bf', 'configpro', 'ConfigMeta API'),
         Journal('bb90bc3b-0e11-4018-91c0-890b5ead5fbc', 'dollar_notifier', 'Dollar Notifier'),
         Journal('7bbf1c62-2023-483d-a2bc-482e89328457', 'rlt_server', 'RLT API'),
-        Journal('f48c8f84-b4a2-4ae3-bc0c-7459e08eabca', 'bot_exide_hub_staging', 'Bot Exide [Hub] | Staging'),
+        Journal('f48c8f84-b4a2-4ae3-bc0c-7459e08eabca', 'bot_exide_hub_staging', 'BOT Exide [Hub] | Staging'),
         Journal('1bc6539e-7d82-436a-8778-89b7b7d70606', 'telegram_bot_staging', 'BOT Exide [Telegram] | Staging'),
     ]
 
@@ -68,8 +78,9 @@ class JournalService:
         for compose in self.__dockers:
             result.append(Loggable(id=compose.id, name=compose.name))
 
-            for c in compose.containers:
-                result.append(Loggable(id=c.id, name=c.display_name))
+            # TODO use docker python module
+            # for c in compose.containers:
+            #     result.append(Loggable(id=c.id, name=c.display_name))
         
         result += (Loggable(id=j.id, name=j.name) for j in self.__journals)
 
@@ -103,7 +114,7 @@ class JournalService:
         if (self._env.is_windows):
             return ['Windows', 'dev', 'stub']
 
-        result = subprocess.run(['docker', 'logs', container.name, '-t', '-n', str(count)], stdout=subprocess.PIPE)
+        result = subprocess.run(['docker', 'logs', container.name], capture_output=True)
         logs = result.stdout.decode('utf-8').split('\n')
 
         return logs
