@@ -20,6 +20,7 @@ class Journal:
 class DockerContainer:
     id: str
     name: str
+    display_name: str
 
 @dataclass
 class DockerCompose:
@@ -38,8 +39,8 @@ class JournalService:
             compose_file='/home/exide/repos/bot_exide_staging/compose.yaml',
             env_file='/home/exide/repos/bot_exide_staging/.env.docker.staging',
             containers=[
-                DockerContainer('b573503f-7de9-4092-8eb1-1c0a41fb9138', 'bot-exide-staging_hub'),
-                DockerContainer('98efe8fe-3c8f-4958-b47e-aefc83a841e5', 'bot-exide-staging_telegram-bot'),
+                DockerContainer('b573503f-7de9-4092-8eb1-1c0a41fb9138', 'bot-exide-staging_hub', 'BOT Exide [Hub] | Staging'),
+                DockerContainer('98efe8fe-3c8f-4958-b47e-aefc83a841e5', 'bot-exide-staging_telegram-bot', 'BOT Exide [Telegram] | Staging'),
             ]
         ),
     ]
@@ -68,7 +69,7 @@ class JournalService:
             result.append(Loggable(id=compose.id, name=compose.name))
 
             for c in compose.containers:
-                result.append(Loggable(id=c.id, name=c.name))
+                result.append(Loggable(id=c.id, name=c.display_name))
         
         result += (Loggable(id=j.id, name=j.name) for j in self.__journals)
 
