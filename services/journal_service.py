@@ -17,7 +17,7 @@ class Journal:
         self.name = name
 
 @dataclass
-class DockerContainer:
+class DockerComposeService:
     id: str
     name: str
     display_name: str
@@ -28,7 +28,7 @@ class DockerCompose:
     name: str
     compose_file: str
     env_file: str
-    containers: list[DockerContainer]
+    containers: list[DockerComposeService]
 
 
 class JournalService:
@@ -39,8 +39,10 @@ class JournalService:
             compose_file='/home/exide/repos/bot_exide/compose.yaml',
             env_file='/home/exide/repos/bot_exide/.env.docker.prod',
             containers=[
-                DockerContainer('fbdd5548-f22b-457b-9216-f41a480e7745', 'bot-exide-prod_hub', 'BOT Exide [Hub] | Prod'),
-                DockerContainer('58de9573-1a85-4dbb-b530-89d2eac0101c', 'bot-exide-prod_telegram-bot', 'BOT Exide [Telegram] | Prod'),
+                DockerComposeService('fbdd5548-f22b-457b-9216-f41a480e7745', 'hub', 'BOT Hub | Prod [Docker]'),
+                DockerComposeService('58de9573-1a85-4dbb-b530-89d2eac0101c', 'telegram_bot', 'BOT Telegram | Prod [Docker]'),
+                DockerComposeService('0c6c74b5-451f-4cbb-b914-1a1257f77c02', 'discord_bot', 'BOT Discord | Prod [Docker]'),
+                DockerComposeService('706103b0-6d2a-440f-80e9-391f785f10ac', 'vk_bot', 'BOT VK | Prod [Docker]'),
             ],
         ),
         DockerCompose(
@@ -49,8 +51,8 @@ class JournalService:
             compose_file='/home/exide/repos/bot_exide_staging/compose.yaml',
             env_file='/home/exide/repos/bot_exide_staging/.env.docker.staging',
             containers=[
-                DockerContainer('b573503f-7de9-4092-8eb1-1c0a41fb9138', 'bot-exide-staging_hub', 'BOT Exide [Hub] | Staging'),
-                DockerContainer('98efe8fe-3c8f-4958-b47e-aefc83a841e5', 'bot-exide-staging_telegram-bot', 'BOT Exide [Telegram] | Staging'),
+                DockerComposeService('b573503f-7de9-4092-8eb1-1c0a41fb9138', 'hub', 'BOT Hub | Staging [Docker]'),
+                DockerComposeService('98efe8fe-3c8f-4958-b47e-aefc83a841e5', 'telegram_bot', 'BOT Telegram | Staging [Docker]'),
             ],
         ),
     ]
@@ -76,9 +78,8 @@ class JournalService:
         for compose in self.__dockers:
             result.append(Loggable(id=compose.id, name=compose.name))
 
-            # TODO use docker python module
-            # for c in compose.containers:
-            #     result.append(Loggable(id=c.id, name=c.display_name))
+            for c in compose.containers:
+                result.append(Loggable(id=c.id, name=c.display_name))
         
         result += (Loggable(id=j.id, name=j.name) for j in self.__journals)
 
@@ -91,7 +92,7 @@ class JournalService:
 
             for container in compose.containers:
                 if (container.id == id):
-                    return self.__docker_container_logs(container, count)
+                    return self.__docker_container_logs(compose, container, count)
 
         for journal in self.__journals:
             if (journal.id == id):
@@ -103,16 +104,16 @@ class JournalService:
         if (self._env.is_windows):
             return ['Windows', 'dev', 'stub']
 
-        result = subprocess.run(['docker', 'compose', '-f', compose.compose_file, '--env-file', compose.env_file, 'logs', '-t', '-n', str(count)], stdout=subprocess.PIPE)
+        result = subprocess.run(['docker', 'compose', '-f', compose.compose_file, '--env-file', compose.env_file, 'logs', '-n', str(count)], stdout=subprocess.PIPE)
         logs = result.stdout.decode('utf-8').split('\n')
 
         return logs
 
-    def __docker_container_logs(self, container: DockerContainer, count: int) -> List[str]:
+    def __docker_container_logs(self, compose: DockerCompose, service: DockerComposeService, count: int) -> List[str]:
         if (self._env.is_windows):
             return ['Windows', 'dev', 'stub']
 
-        result = subprocess.run(['docker', 'logs', container.name], capture_output=True)
+        result = subprocess.run(['docker', 'compose', '-f', compose.compose_file, '--env-file', compose.env_file, 'logs', service.name, ' --no-log-prefix', '-t', '-n', str(count)], stdout=subprocess.PIPE)
         logs = result.stdout.decode('utf-8').split('\n')
 
         return logs
