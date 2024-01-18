@@ -35,24 +35,24 @@ class JournalService:
     __dockers = [
         DockerCompose(
             id='13ceb764-46cc-435e-a4f9-5bc830f0958e',
-            name='BOT Exide [Compose] | Prod',
+            name='[Prod] BOT Exide | Compose',
             compose_file='/home/exide/repos/bot_exide/compose.yaml',
             env_file='/home/exide/repos/bot_exide/.env.docker.prod',
             containers=[
-                DockerComposeService('fbdd5548-f22b-457b-9216-f41a480e7745', 'hub', 'BOT Hub | Prod [Docker]'),
-                DockerComposeService('58de9573-1a85-4dbb-b530-89d2eac0101c', 'telegram_bot', 'BOT Telegram | Prod [Docker]'),
-                DockerComposeService('0c6c74b5-451f-4cbb-b914-1a1257f77c02', 'discord_bot', 'BOT Discord | Prod [Docker]'),
-                DockerComposeService('706103b0-6d2a-440f-80e9-391f785f10ac', 'vk_bot', 'BOT VK | Prod [Docker]'),
+                DockerComposeService('fbdd5548-f22b-457b-9216-f41a480e7745', 'hub', '[Prod] BOT Exide | Hub'),
+                DockerComposeService('58de9573-1a85-4dbb-b530-89d2eac0101c', 'telegram_bot', '[Prod] BOT Exide | Telegram'),
+                DockerComposeService('0c6c74b5-451f-4cbb-b914-1a1257f77c02', 'discord_bot', '[Prod] BOT Exide | Discord'),
+                DockerComposeService('706103b0-6d2a-440f-80e9-391f785f10ac', 'vk_bot', '[Prod] BOT Exide | VK'),
             ],
         ),
         DockerCompose(
             id='816c6de1-161b-4546-b4f8-e69d4d17dc7d',
-            name='BOT Exide [Compose] | Staging',
+            name='[Staging] BOT Exide | Compose',
             compose_file='/home/exide/repos/bot_exide_staging/compose.yaml',
             env_file='/home/exide/repos/bot_exide_staging/.env.docker.staging',
             containers=[
-                DockerComposeService('b573503f-7de9-4092-8eb1-1c0a41fb9138', 'hub', 'BOT Hub | Staging [Docker]'),
-                DockerComposeService('98efe8fe-3c8f-4958-b47e-aefc83a841e5', 'telegram_bot', 'BOT Telegram | Staging [Docker]'),
+                DockerComposeService('b573503f-7de9-4092-8eb1-1c0a41fb9138', 'hub', '[Staging] BOT Exide | Hub'),
+                DockerComposeService('98efe8fe-3c8f-4958-b47e-aefc83a841e5', 'telegram_bot', '[Staging] BOT Exide | Telegram'),
             ],
         ),
     ]
