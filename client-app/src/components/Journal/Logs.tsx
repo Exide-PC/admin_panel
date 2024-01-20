@@ -123,19 +123,24 @@ const Logs = ({  }: Props) => {
 }
 
 const LogRow = ({ text }: { text: string }) => {
-    const jsx = useMemo<JSX.Element[]>(() => {
+    const jsx = useMemo<JSX.Element>(() => {
         const spaceIndex = text.indexOf(' '); 
         const left = text.slice(0, spaceIndex)
 
         if (!left.endsWith('Z')) // not utc timestamp
-            return [<>{text}</>]
+            return <>{text}</>
         
         const right = text.slice(spaceIndex + 1)
 
-        return [
-            <Moment key={0} date={left} />,
-            <React.Fragment key={1}>{right}</React.Fragment>,
-        ]
+        return (<>
+            <small>
+                <Moment date={left}/>
+            </small>
+            &nbsp;
+            <React.Fragment>
+                {right}
+            </React.Fragment>
+        </>)
     }, [text]);
     
     return (
