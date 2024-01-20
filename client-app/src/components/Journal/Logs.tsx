@@ -5,6 +5,7 @@ import { DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, InputGrou
 import { JournalOutput, fetchJournalLogs } from "../../features/maintenance/maintenance-api";
 import { useJournals } from "../../features/maintenance/maintenance-logic";
 import { Loggable } from "../../features/maintenance/maintenance-slice";
+import Moment from "react-moment";
 
 interface Props {
 }
@@ -121,10 +122,25 @@ const Logs = ({  }: Props) => {
     )
 }
 
-const LogRow = ({ text}: { text: string }) => {
+const LogRow = ({ text }: { text: string }) => {
+    const jsx = useMemo<JSX.Element[]>(() => {
+        const spaceIndex = text.indexOf(' '); 
+        const left = text.slice(0, spaceIndex)
+
+        if (!left.endsWith('Z')) // not utc timestamp
+            return [<>{text}</>]
+        
+        const right = text.slice(spaceIndex + 1)
+
+        return [
+            <Moment key={0} date={left} />,
+            <React.Fragment key={1}>{right}</React.Fragment>,
+        ]
+    }, [text]);
+    
     return (
         <span style={{ color: getColor(text) }}>
-            {text}
+            {jsx}
         </span>
     )
 }
