@@ -16,12 +16,12 @@ class MaintenanceService:
         
         MaintenanceCommand('04f43395-33da-443f-a9e5-ce7e1afce94c', 'Git Pull', 'Bot Exide [Prod]', 'git -C ~/repos/bot_exide pull'),
         MaintenanceCommand('8a23210f-0f25-4d5b-b6b1-daeffbbf8e49', 'Compose build', 'Bot Exide [Prod]', 'docker compose -f /home/exide/repos/bot_exide/compose.yaml --env-file /home/exide/repos/bot_exide/.env.docker.prod up --build -d'),
-        MaintenanceCommand('036e8933-c4e4-4c1d-8d8e-1a085323bdbc', 'Restart hub', 'Bot Exide [Prod]', 'sudo service bot_exide_hub restart'),
-        MaintenanceCommand('3b1b5f29-0c1a-4693-a3c8-7dab911979f0', 'Re-deploy web', 'Bot Exide [Prod]', 'npm run build --prefix ~/repos/bot_exide/hub/client-app && cp -r ~/repos/bot_exide/hub/client-app/build/* /usr/share/nginx/www/bot.exideprod.com/admin_panel'),
-        MaintenanceCommand('80df3b9b-b099-4eb3-bd41-ddb63751319e', 'Restart Discord Bot', 'Bot Exide [Prod]', 'sudo service discord_bot restart'),
-        MaintenanceCommand('de20b147-ff58-4fa6-84bb-c34326cff776', 'Restart Telegram Bot', 'Bot Exide [Prod]', 'sudo service telegram_bot restart'),
-        MaintenanceCommand('b84322e9-b3eb-4446-86cf-352cb49300b0', 'Restart VK Bot', 'Bot Exide [Prod]', 'sudo service vk_bot restart'),
-        MaintenanceCommand('3748f6cb-328a-4c61-a21f-967b73db72a3', 'Re-deploy Mini App', 'Bot Exide [Prod]', 'npm run build --prefix ~/repos/bot_exide/telegram_bot/web-app && cp -r ~/repos/bot_exide/telegram_bot/web-app/build/* /usr/share/nginx/www/bot.exideprod.com/mini-app-prod'),
+        # MaintenanceCommand('036e8933-c4e4-4c1d-8d8e-1a085323bdbc', 'Restart hub', 'Bot Exide [Prod]', 'sudo service bot_exide_hub restart'),
+        # MaintenanceCommand('3b1b5f29-0c1a-4693-a3c8-7dab911979f0', 'Re-deploy web', 'Bot Exide [Prod]', 'npm run build --prefix ~/repos/bot_exide/hub/client-app && cp -r ~/repos/bot_exide/hub/client-app/build/* /usr/share/nginx/www/bot.exideprod.com/admin_panel'),
+        # MaintenanceCommand('80df3b9b-b099-4eb3-bd41-ddb63751319e', 'Restart Discord Bot', 'Bot Exide [Prod]', 'sudo service discord_bot restart'),
+        # MaintenanceCommand('de20b147-ff58-4fa6-84bb-c34326cff776', 'Restart Telegram Bot', 'Bot Exide [Prod]', 'sudo service telegram_bot restart'),
+        # MaintenanceCommand('b84322e9-b3eb-4446-86cf-352cb49300b0', 'Restart VK Bot', 'Bot Exide [Prod]', 'sudo service vk_bot restart'),
+        # MaintenanceCommand('3748f6cb-328a-4c61-a21f-967b73db72a3', 'Re-deploy Mini App', 'Bot Exide [Prod]', 'npm run build --prefix ~/repos/bot_exide/telegram_bot/web-app && cp -r ~/repos/bot_exide/telegram_bot/web-app/build/* /usr/share/nginx/www/bot.exideprod.com/mini-app-prod'),
 
         MaintenanceCommand('a5e852ae-a1fd-450f-b15f-6c59226dffc7', 'Git Pull', 'Bot Exide [Staging]', 'git -C ~/repos/bot_exide_staging pull'),
         MaintenanceCommand('c5241166-f30d-41da-b782-0ac75837a3b1', 'Compose build', 'Bot Exide [Staging]', 'docker compose -f /home/exide/repos/bot_exide_staging/compose.yaml --env-file /home/exide/repos/bot_exide_staging/.env.docker.staging up --build -d'),

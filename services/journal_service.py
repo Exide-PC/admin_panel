@@ -58,15 +58,15 @@ class JournalService:
     ]
 
     __journals = [
-        Journal('f8c0c569-c4c8-4b00-b07b-5ef186c1c132', 'bot_exide_hub', 'BOT Exide [Hub] | Prod'),
-        Journal('d73c92b6-ff16-41a7-b4ee-222b06f3f30f', 'discord_bot', 'BOT Exide [Discord] | Prod'),
-        Journal('3d36183a-e31d-42c4-8216-039ff1a7f3a3', 'telegram_bot', 'BOT Exide [Telegram] | Prod'),
-        Journal('9f8e0927-3d48-4416-94ac-b87b1fa3aae2', 'vk_bot', 'BOT Exide [VK] | Prod'),
+        # Journal('f8c0c569-c4c8-4b00-b07b-5ef186c1c132', 'bot_exide_hub', 'BOT Exide [Hub] | Prod'),
+        # Journal('d73c92b6-ff16-41a7-b4ee-222b06f3f30f', 'discord_bot', 'BOT Exide [Discord] | Prod'),
+        # Journal('3d36183a-e31d-42c4-8216-039ff1a7f3a3', 'telegram_bot', 'BOT Exide [Telegram] | Prod'),
+        # Journal('9f8e0927-3d48-4416-94ac-b87b1fa3aae2', 'vk_bot', 'BOT Exide [VK] | Prod'),
         Journal('29dadd8d-56b6-4544-b9f5-7c55b7abf6ca', 'admin_panel', 'Admin Panel API'),
         Journal('77d91bf1-8cdd-4856-9452-84addec36f14', 'minecraft-server', 'Minecraft Server'),
         Journal('1230d4e9-01da-45de-8b50-ac7227a2c3bf', 'configpro', 'ConfigMeta API'),
-        Journal('bb90bc3b-0e11-4018-91c0-890b5ead5fbc', 'dollar_notifier', 'Dollar Notifier'),
-        Journal('7bbf1c62-2023-483d-a2bc-482e89328457', 'rlt_server', 'RLT API'),
+        # Journal('bb90bc3b-0e11-4018-91c0-890b5ead5fbc', 'dollar_notifier', 'Dollar Notifier'),
+        # Journal('7bbf1c62-2023-483d-a2bc-482e89328457', 'rlt_server', 'RLT API'),
     ]
 
     def __init__(self, env: Environment) -> None:
