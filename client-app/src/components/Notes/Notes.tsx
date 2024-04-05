@@ -87,7 +87,7 @@ const Notes = ({  }: Props) => {
                 onClick={() => setNote(n)}
                 style={{
                     cursor: 'pointer',
-                    whiteSpace: 'break-spaces',
+                    whiteSpace: 'pre-line',
                     color: n.id === note.id ? 'orange' : undefined
                 }}
             >
