@@ -52,7 +52,7 @@ class JournalService:
             env_file='/home/exide/repos/bot_exide_staging/.env.docker.staging',
             containers=[
                 DockerComposeService('b573503f-7de9-4092-8eb1-1c0a41fb9138', 'hub', '[Staging] BOT Exide | Hub'),
-                DockerComposeService('98efe8fe-3c8f-4958-b47e-aefc83a841e5', 'telegram_bot', '[Staging] BOT Exide | Telegram'),
+                DockerComposeService('98efe8fe-3c8f-4958-b47e-aefc83a841e5', 'telegram_bot_manager', '[Staging] BOT Exide | Telegram'),
             ],
         ),
     ]
