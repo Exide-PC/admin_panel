@@ -27,12 +27,12 @@ class MaintenanceService:
         # MaintenanceCommand('b84322e9-b3eb-4446-86cf-352cb49300b0', 'Restart VK Bot', 'Bot Exide [Prod]', 'sudo service vk_bot restart'),
         # MaintenanceCommand('3748f6cb-328a-4c61-a21f-967b73db72a3', 'Re-deploy Mini App', 'Bot Exide [Prod]', 'npm run build --prefix ~/repos/bot_exide/telegram_bot/web-app && cp -r ~/repos/bot_exide/telegram_bot/web-app/build/* /usr/share/nginx/www/bot.exideprod.com/mini-app-prod'),
 
-        MaintenanceCommand('a5e852ae-a1fd-450f-b15f-6c59226dffc7', 'Git Pull', 'Bot Exide [Staging]', 'git -C ~/repos/bot_exide_staging pull'),
-        MaintenanceCommand('c5241166-f30d-41da-b782-0ac75837a3b1', 'Compose build', 'Bot Exide [Staging]', 'docker compose -f /home/exide/repos/bot_exide_staging/compose.yaml --env-file /home/exide/repos/bot_exide_staging/.env.docker.staging up --build -d'),
-        MaintenanceCommand('86854788-06ea-47cf-b20f-0fde185b689d', 'Compose stop', 'Bot Exide [Staging]', 'docker compose -f /home/exide/repos/bot_exide_staging/compose.yaml --env-file /home/exide/repos/bot_exide_staging/.env.docker.staging stop'),
-        MaintenanceCommand('aaf776e2-127d-4c95-9fce-5978572a4ac6', 'Compose restart', 'Bot Exide [Staging]', 'docker compose -f /home/exide/repos/bot_exide_staging/compose.yaml --env-file /home/exide/repos/bot_exide_staging/.env.docker.staging restart'),
-        MaintenanceCommand('83012220-828d-47f0-92b5-5a5914235323', 'Compose down', 'Bot Exide [Staging]', 'docker compose -f /home/exide/repos/bot_exide_staging/compose.yaml --env-file /home/exide/repos/bot_exide_staging/.env.docker.staging down'),
-        MaintenanceCommand('d927a3ae-dd5e-4079-9a3f-405a7b28131e', 'Restart bot manager', 'Bot Exide [Staging]', 'docker compose -f /home/exide/repos/bot_exide_staging/compose.yaml --env-file /home/exide/repos/bot_exide_staging/.env.docker.staging restart telegram_bot_manager'),
+        MaintenanceCommand('a5e852ae-a1fd-450f-b15f-6c59226dffc7', 'Git Pull', 'Bot Exide [Staging]', 'git -C ~/repos/bot_exide_bare/staging pull'),
+        MaintenanceCommand('c5241166-f30d-41da-b782-0ac75837a3b1', 'Compose build', 'Bot Exide [Staging]', 'docker compose -f /home/exide/repos/bot_exide_bare/staging/compose.yaml --env-file /home/exide/repos/bot_exide_bare/staging/.env.docker.staging up --build -d'),
+        MaintenanceCommand('86854788-06ea-47cf-b20f-0fde185b689d', 'Compose stop', 'Bot Exide [Staging]', 'docker compose -f /home/exide/repos/bot_exide_bare/staging/compose.yaml --env-file /home/exide/repos/bot_exide_bare/staging/.env.docker.staging stop'),
+        MaintenanceCommand('aaf776e2-127d-4c95-9fce-5978572a4ac6', 'Compose restart', 'Bot Exide [Staging]', 'docker compose -f /home/exide/repos/bot_exide_bare/staging/compose.yaml --env-file /home/exide/repos/bot_exide_bare/staging/.env.docker.staging restart'),
+        MaintenanceCommand('83012220-828d-47f0-92b5-5a5914235323', 'Compose down', 'Bot Exide [Staging]', 'docker compose -f /home/exide/repos/bot_exide_bare/staging/compose.yaml --env-file /home/exide/repos/bot_exide_bare/staging/.env.docker.staging down'),
+        MaintenanceCommand('d927a3ae-dd5e-4079-9a3f-405a7b28131e', 'Restart bot manager', 'Bot Exide [Staging]', 'docker compose -f /home/exide/repos/bot_exide_bare/staging/compose.yaml --env-file /home/exide/repos/bot_exide_bare/staging/.env.docker.staging restart telegram_bot_manager'),
     ]
     
     def __init__(self) -> None:
