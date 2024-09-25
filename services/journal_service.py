@@ -36,8 +36,8 @@ class JournalService:
         DockerCompose(
             id='13ceb764-46cc-435e-a4f9-5bc830f0958e',
             name='[Prod] BOT Exide | Compose',
-            compose_file='/home/exide/repos/bot_exide/compose.yaml',
-            env_file='/home/exide/repos/bot_exide/.env.docker.prod',
+            compose_file='/home/exide/repos/bot_exide_bare/production/compose.yaml',
+            env_file='/home/exide/repos/bot_exide_bare/production/.env.docker.prod',
             containers=[
                 DockerComposeService('fbdd5548-f22b-457b-9216-f41a480e7745', 'hub', '[Prod] BOT Exide | Hub'),
                 DockerComposeService('58de9573-1a85-4dbb-b530-89d2eac0101c', 'telegram_bot_manager', '[Prod] BOT Exide | Telegram'),
